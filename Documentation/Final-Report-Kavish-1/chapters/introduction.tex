@@ -1,0 +1,69 @@
+
+
+\section{Problem Statement}
+
+The protein-protein interaction (PPI) is a vastly studied area and thus there are various datasets and computational methods available to tackle the issue but these are far from perfect. 
+Not only are the datasets incomplete (they cover less than 60\% of non-redundant 
+human PPI), the prediction models are also lacking in completely capturing the 
+notion of a PPI. Furthermore, the present method of representing proteins makesuse
+of a static PPI network which does not fully capture the process of interaction 
+between two or more proteins. These factors contribute to the present issue of 
+predicting further interactions as prediction is deeply dependent on analysis. 
+The problems that lie within the present analysis and prediction methods are follows:
+    
+    \begin{enumerate}
+        \item Datasets are (1) Incomplete, and (2) contain false-positivies and false-negatives.
+        \item PPI networks are represented statically, instead of dynamically, which leaves out important PPI information.
+        \item Protein Complex identification methods do not account for various factors such as (1) real protein complexes being small and sparse, and (2) using network topological features instead biological data for scoring. 
+    \end{enumerate}
+    
+\section{Proposed Solution}
+
+    \begin{enumerate}
+        \item Recompile present datasets and filter them using various data cleaning techniques
+        \item Make of generative models to account for limited data.
+        \item Make use of static and dynamic PPI's to create a more realistic PPI representation.
+        \item Make use of Ensemble Clustering Methods to account for the various factors that present algorithms overlook.
+    \end{enumerate}
+    
+% \section{Intended User}
+
+% This section outlines the target users of this system. The different types of users in our user base and their interaction with the system are described briefly.
+
+\section{Project Gantt Chat \& Deliverables}
+% Please include a detailed gantt and details of the deliverables for Kaavish I and II
+\subsection{Deliverables}
+\begin{itemize}
+    \item Dataset
+    \item PPIN Python Library 
+    \item Implemented Prediction Algorithm
+    \item PPIN Visualization Method
+    \item Final Report
+\end{itemize}
+
+\subsection{Gantt Chart}
+The Gantt Chart can be found \href{https://docs.google.com/spreadsheets/d/177G2Ug8ePJ5wdr1S0T3gbmti7pWHkpZjnaGsunB9-Pk/edit?usp=sharing}{\texttt{here}}.
+
+\section{Key Challenges}
+
+\begin{itemize}
+    \item \textbf{Scattered Datasets:} The currently available datasets on the internet are not very well maintained and also contain false negatives and positives. Therefore, it is a key challenge to address for the success of this project for us to be able to established a well refined dataset. 
+    
+    \textbf{Solution:} We have chosen to tackle this challenge by viewing the dataset as a key deliverable as part of our project, which means that the one person is solely working on collection, and arrangement of the data systematically. This focused effort should help in tackling this challenge.
+    
+    \item \textbf{Complexity of Problem:} The problem of PPI prediction requires a algorithmic analysis on large networks and the problem is an \textbf{NP-Hard} problem. The problem is time complexity is not unknown to the field of Computer Science and it is a key challenge for us to circumvent this limitation.
+    
+    \textbf{Solution:} This issue will be tackled through use of learning algorithms that take up heuristic based approaches to approximate the solution which lowers the processing required. We will also look into other techniques to speed up our algorithms via the use of tools such as \texttt{openMPI} and \texttt{CUDA}.
+    
+    \item \textbf{Knowledge Collection:} Proteomics and Bioinformatics are vast areas of study, and thus, there is a huge amount of information present within academic literature which makes collecting, arranging, and synthesizing knowledge a key challenge for our project.
+    
+    \textbf{Solution:} Since, this is a research project, at large, we will be reviewing throughout the course of the project. Every group member is responsible for reading and finding literature relevant to the work they are focused on. We have made use of tools such as \url{https://www.researchrabbit.ai/} to find literature that is most relevant to us. 
+    
+    \item \textbf{Lack of Professional Opinion:} Since the project is centered around Computational Biology, a highly specialized field, we lack the help of an expert opinion which has posed to be a great challenge when navigating complex information within the field. 
+    
+    \textbf{Solution:} We have contacted various people who have some relevant experience in order to circumvent this limitation. One such person is \href{https://oric.iba.edu.pk/profile.php?id=irauf}{Dr. Imran Rauf}. Furthermore, our co-Advisor, Dr. Humaira Jamshed is also a source of expertise for Biology.
+    
+    \item \textbf{Creating a Pipeline:} There are various methodologies and paths to explore in solving for PPI predictions, we have chosen Ensemble Clustering Methods as our primary choice and proof of concept. However, as we dive further into research and literature, uncovering of new information may cause us to slightly diverge from our current plan of action in terms of creating the database, the final algorithmic approach to the problem, etc.
+    
+    \textbf{Solution:} We are ensuring that our pipeline is constantly being updated and is inline with the literature that we are reading while we maintain a core structure of the pipeline in order for the project's scope and final deliverable to remain preserved.
+\end{itemize}

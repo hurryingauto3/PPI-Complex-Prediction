@@ -1,0 +1,10 @@
+*.pdf
+*.aux
+*.dvi
+*.log
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.zip
+*.xml
+_pychache_/
