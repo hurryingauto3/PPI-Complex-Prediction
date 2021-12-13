@@ -4,7 +4,7 @@
 \usepackage{biblatex}  % reference management
 \usepackage{geometry}  % better margins and margin control
 \usepackage{graphicx}  % to include figures
-\usepackage{hyperref}  % internal and external links
+% \usepackage{hyperref}  % internal and external links
 \usepackage[utf8]{inputenc}  % support for non-ASCII characters
 \usepackage{listings}  % typset code
 \usepackage{outlines}  % easy nesting of lists
@@ -13,17 +13,20 @@
 \usepackage{upquote}  % prevent mishandling of single quotes in listings
 \usepackage{xcolor}
 \usepackage{pgfgantt}
+\usepackage{amsmath}
 \usepackage{rotating}
 \usepackage[graphicx]{realboxes}
+\usepackage{attachfile}
 
 \hypersetup{
-    colorlinks=false,
+    colorlinks=true,
     linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=cyan,
-    pdftitle={Overleaf Example},
-    pdfpagemode=FullScreen,
-}
+    filecolor=blue,      
+    urlcolor=blue,
+    citecolor= blue,
+    pdftitle={SRS - Team Prions}
+    }
+
 
 % \definecolor{barblue}{RGB}{153,204,254}
 % \definecolor{groupblue}{RGB}{51,102,254}
@@ -133,6 +136,11 @@
 % \end{appendices}
 
 % % Print the bibliography with a ToC entry and titled, "References".
+\chapter{Software Design Specifications (SDS)}
+\label{chap:sds}
+\input{chapters/sds}
+
+
 \printbibliography[heading=bibintoc,title={References}]
 
 \end{document}
