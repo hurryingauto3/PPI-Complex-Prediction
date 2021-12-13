@@ -85,30 +85,30 @@
 \ProcessOptions\relax
 
 \ifanullb
-   \setlength{\paperwidth}{129.3cm} %% 36 * sqrt(2) in
-   \setlength{\paperheight}{91.4cm} %% 36 in
-   \setlength{\textwidth}{119.3cm} %% paperwidth - (5cm + 5cm)
-   \setlength{\textheight}{81.4cm} %% paperheight - (5cm + 5cm)
+   \setlength{\paperwidth}{91.44cm} %% 36 * sqrt(2) in
+   \setlength{\paperheight}{91.44cm} %% 36 in
+   \setlength{\textwidth}{81.44cm} %% paperwidth - (5cm + 5cm)
+   \setlength{\textheight}{81.44cm} %% paperheight - (5cm + 5cm)
 \else\ifanull
-        \setlength{\paperwidth}{118.82cm}
-        \setlength{\paperheight}{83.96cm}
-        \setlength{\textwidth}{108.82cm} %% paperwidth - (5cm + 5cm)
-        \setlength{\textheight}{73.96cm} %% paperheight - (5cm + 5cm)
+        \setlength{\paperwidth}{91.44cm} %% 36 * sqrt(2) in
+   \setlength{\paperheight}{91.44cm} %% 36 in
+   \setlength{\textwidth}{81.44cm} %% paperwidth - (5cm + 5cm)
+   \setlength{\textheight}{81.44cm} %% paperheight - (5cm + 5cm)
      \else\ifaeins
-             \setlength{\paperwidth}{83.96cm}
-             \setlength{\paperheight}{59.4cm}
-             \setlength{\textwidth}{79.96cm}
-             \setlength{\textheight}{55.4cm}
+             \setlength{\paperwidth}{91.44cm} %% 36 * sqrt(2) in
+   \setlength{\paperheight}{91.44cm} %% 36 in
+   \setlength{\textwidth}{81.44cm} %% paperwidth - (5cm + 5cm)
+   \setlength{\textheight}{81.44cm} %% paperheight - (5cm + 5cm)
           \else\ifazwei
-                  \setlength{\paperwidth}{59.4cm}
-                  \setlength{\paperheight}{41.98cm}
-                  \setlength{\textwidth}{55.4cm}
-                  \setlength{\textheight}{37.98cm}
+                  \setlength{\paperwidth}{91.44cm} %% 36 * sqrt(2) in
+   \setlength{\paperheight}{91.44cm} %% 36 in
+   \setlength{\textwidth}{81.44cm} %% paperwidth - (5cm + 5cm)
+   \setlength{\textheight}{81.44cm} %% paperheight - (5cm + 5cm)
                \else\ifadrei
-                       \setlength{\paperwidth}{41.98cm}
-                       \setlength{\paperheight}{29.7cm}
-                       \setlength{\textwidth}{37.98cm}
-                       \setlength{\textheight}{25.7cm}
+                       \setlength{\paperwidth}{91.44cm} %% 36 * sqrt(2) in
+   \setlength{\paperheight}{91.44cm} %% 36 in
+   \setlength{\textwidth}{81.44cm} %% paperwidth - (5cm + 5cm)
+   \setlength{\textheight}{81.44cm} %% paperheight - (5cm + 5cm)
                     \else\relax
                     \fi
                \fi
@@ -178,18 +178,18 @@
 
 \AtBeginDocument{
 \ifanullb
-   \ifportrait\special{papersize=91.4cm,129.3cm}\else\special{papersize=129.3cm,91.4cm}\fi
+   \ifportrait\special{papersize=91.44cm,91.44cm}\else\special{papersize=129.3cm,91.44cm}\fi
 \else\ifanull
-        \ifportrait\special{papersize=83.96cm,118.82cm}\else\special{papersize=118.82cm,83.96cm}\fi
+        \ifportrait\special{papersize=91.44cm,91.44cm}\else\special{papersize=91.44cm,91.44cm}\fi
      \else\ifaeins
-             \ifportrait\special{papersize=59.4cm,83.96cm}\else\special{papersize=83.96cm,59.4cm}\fi
+             \ifportrait\special{papersize=59.4cm,83.96cm}\else\special{papersize=91.44cm,91.44cm}\fi
           \else\ifazwei
-                  \ifportrait\special{papersize=41.98cm,59.4cm}\else\special{papersize=59.4cm,41.98cm}\fi
+                  \ifportrait\special{papersize=91.44cm,91.44cm}\else\special{papersize=91.44cm,91.44cm}\fi
                \else\ifadrei
                       \ifpreview
-                       \ifportrait\special{papersize=29.7cm,41.35cm}\else\special{papersize=41.98cm,29.0cm}\fi
+                       \ifportrait\special{papersize=91.44cm,91.44cm}\else\special{papersize=91.44cm,91.44cm}\fi
                       \else
-                       \ifportrait\special{papersize=29.7cm,41.98cm}\else\special{papersize=41.98cm,29.7cm}\fi
+                       \ifportrait\special{papersize=91.44cm,91.44cm}\else\special{papersize=91.44cm,91.44cm}\fi
                       \fi
                     \else\relax
                     \fi
