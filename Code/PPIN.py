@@ -6,7 +6,7 @@ import pyrebase
 from firebaseConfig import config
 
 class PPIN:   
-    PPIdb = 0
+    PPIdb = pyrebase.initialize_app(config)
     graph = nx.Graph()
     file_data = []
     def __init__(self, input, type = "db"):
@@ -53,4 +53,5 @@ class PPIN:
 
 if __name__ == "__main__":
     ppi = PPIN("MDH2")
-    print(nx.clustering(ppi.graph))
+    print(ppi.get_interactions())
+    # print(nx.clustering(ppi.graph))
