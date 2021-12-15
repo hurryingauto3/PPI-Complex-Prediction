@@ -1,6 +1,6 @@
-import pymongo
-client = pymongo.MongoClient("mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
-db = client.test
+# import pymongo
+# client = pymongo.MongoClient("mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
+# db = client.test
 
 # # file_loc = "Datasets\human-prot\string-all-prot.txt"
 # # string_prot = open(file_loc, 'r')
@@ -78,4 +78,15 @@ db = client.test
 # # with urllib.request.urlopen(req) as f:
 # #    response = f.read()
 # # print(response.decode('utf-8').split("\n")[1].split("\t")[1])
+
+file_name = "D:\\tempdata\\Biogrid-all-int.tsv"
+file = open(file_name, 'r')
+file.readline()
+n = 1
+for line in file.readlines():
+    temp = line.split("\t")
+    print(temp)
+    n += 1
+    if n == 6:
+        break
 
