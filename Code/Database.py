@@ -20,7 +20,6 @@ class Database:
     def insert_interaction(self, interaction, primary = True, geneA = "", geneB = "", score = ""):
         """Inserts an interaction object into the database"""
         if primary:
-            self.prim_interactions.insert_one(interaction)
             try:
                 self.prim_interactions.insert_one(interaction)
             except error as e:
