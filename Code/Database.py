@@ -1,4 +1,5 @@
 import pymongo
+import json
 
 class Database:
 
@@ -28,9 +29,12 @@ class Database:
         """Inserts a protien object into the database"""
         self.proteins.insert_one(protien)
 
-    def remove_all_interactions(self):
-        self.priminteractions.delete_many({})
-    
+    def remove_all_interactions(self, primary = True):
+        if primary:
+            self.priminteractions.delete_many({})
+        else:
+            self.secinteractions.delete_many({})
+            
     def remove_all_protiens(self):
         self.proteins.delete_many({})   
     
@@ -72,8 +76,20 @@ class Database:
         print("Number of protiens: " + str(self.countProtiens))
     
 if __name__ == "__main__":
-    PPIDB = Database()
-    PPIDB.insert_interaction({"protien1": "MDH2", "protien2": "MDH3", "type": "primary"})
-    PPIDB.insert_interaction({"protien1": "MDH2", "protien2": "MDH3", "type": "secondary"})
+    PPIDb = Database()
+    PPIDb.remove_all_interactions()
+    PPIDb.remove_all_interactions(False)
+    PPIDb.remove_all_protiens()
+    PPIDb.get_stats()
 
-    print(PPIDB.get_interactions())
+
+    with open("Datasets/DONTEDIT/ppidb.json", "r") as read_file:
+        data = json.load(read_file)
+    count = 0
+    for i in data["interactions"]:
+        PPIDb.insert_interaction(data["interactions"][str(i)])
+        count += 1
+        if count == 10:
+            break   
+        # if count == 20:
+        #     break
