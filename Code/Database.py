@@ -97,19 +97,12 @@ class Database:
 
     def __init__(self) -> None:
         self.clientDB = pymongo.MongoClient("mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
-        print("set client")
         self.ppiDB = self.clientDB["PPIdb"]
-        print("selected db")
         self.prim_interactions = self.ppiDB["prim-interactions"]
-        print("set primary interactions")
         self.sec_interactions = self.ppiDB["sec-interactions"]
-        print("set secondary interactions")
         self.proteins = self.ppiDB["proteins"]
-        print("set proteins")
         self.taxonomy = self.ppiDB["taxonomy"]
-        print("set taxonomy")
         self.expdetails = self.ppiDB["exp-details"]
-        print("set exp-details")
 
         # self.countPrimInteractions = self.prim_interactions.count_documents({})
         # self.countSecInteractions = self.sec_interactions.count_documents({})
