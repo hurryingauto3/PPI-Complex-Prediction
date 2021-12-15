@@ -1,120 +1,16 @@
+from os import error
 import pymongo
-import urllib.parse
-import urllib.request
-import requests
-import json
 
-class Data: 
-    def __init__(self) -> None:
-        self.prim_inter_data = {
-            "Source" : "",
-            "Database ID" : "", #the id listed in the database source for the interaction
-            "Gene A" : "", #the official symbol A for protein A
-            "Gene B" : "", #the official symbol A for protein B
-            "MINT Score" : "", #MINT score for the interaction
-            "Experiment Data" : "" #info on exp details key
-        }
-        
-        self.sec_inter_data = {
-            "Source" : "",
-            "Database ID" : "", #the id listed in the database source for the interaction
-            "Gene A" : "", #the official symbol A for protein A
-            "Gene B" : "", #the official symbol A for protein B
-            "MINT Score" : "", #MINT score for the interaction
-            "Predicted Score" : "", #score from ensemble
-            "Experiment Data" : "" #info on exp details key
-        }
-        
-        self.protein_data = {
-            "_id" : "",
-            "Gene" : "", 
-            "UniprotKB AC" : "",
-            "Taxon ID" : "",
-            "Description" : ""
-        }
-        
-        self.taxon_data = {
-            "_id" : "",
-            "Taxon ID" : "",
-            "Species Name" : "" 
-        }
-        
-        self.exp_data = {
-            "Experimental System" : "",
-            "Experiment System Type" : "",
-            "Author" : "",
-            "Publication Source (PubMed ID)" : ""
-        }
-    
-    def get_prim_inters(self):
-        return self.prim_inter_data 
-    
-    def get_sec_inters(self):
-        return self.sec_inter_data
-    
-    def get_proteins(self):
-        return self.protein_data
-    
-    def get_taxons(self):
-        return self.taxon_data
-    
-    def get_exps(self):
-        return self.exp_data   
-    
-    def set_prim_inters(self, source, db_id, geneA, geneB, score, exp_k):
-        self.prim_inter_data["Source"] = source
-        self.prim_inter_data["Database ID"] = db_id
-        self.prim_inter_data["Gene A"] = geneA
-        self.prim_inter_data["Gene B"] = geneB
-        self.prim_inter_data["MINT Score"] = score
-        self.prim_inter_data["Experiment Data"] = exp_k
-        
-    def set_sec_inters(self, source, db_id, geneA, geneB, score, pred_score, exp_k):
-        self.sec_inter_data["Source"] = source
-        self.sec_inter_data["Database ID"] = db_id
-        self.sec_inter_data["Gene A"] = geneA
-        self.sec_inter_data["Gene B"] = geneB
-        self.sec_inter_data["MINT Score"] = score
-        self.sec_inter_data["Predicted Score"] = pred_score
-        self.prim_inter_data["Experiment Data"] = exp_k
-        
-    def set_proteins(self, gene, uniprotKB, taxon, desc):
-        self.protein_data["_id"] = gene
-        self.protein_data["Gene"] = gene
-        self.protein_data["UniprotKB AC"] = uniprotKB
-        self.protein_data["Taxon ID"] = taxon
-        self.protein_data["Description""Gene"] = desc
-    
-    def set_taxons(self, taxon, species):
-        self.taxon_data["_id"] = taxon
-        self.taxon_data["Taxon ID"] = taxon
-        self.taxon_data["Species Name"] = species
-        
-    def set_exps(self, sys, sys_type, author, pubmed):
-        self.exp_data["Experimental System"] = sys
-        self.exp_data["Experiment System Type"] = sys_type
-        self.exp_data["Author"] = author
-        self.exp_data["Publication Source (PubMed ID)"] = pubmed
-
-        
 class Database:
 
     def __init__(self) -> None:
         self.clientDB = pymongo.MongoClient("mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
-        print("started client")
         self.ppiDB = self.clientDB["PPIdb"]
-        print("init DB")
         self.prim_interactions = self.ppiDB["prim-interactions"]
-        print("init interactions")
         self.sec_interactions = self.ppiDB["sec-interactions"]
-        print("init sec-interactions")
         self.proteins = self.ppiDB["proteins"]
-        print("init proteins")
         self.taxonomy = self.ppiDB["taxonomy"]
-        print("init taxon")
         self.expdetails = self.ppiDB["exp-details"]
-        print("init exp details")
-
         # self.countPrimInteractions = self.prim_interactions.count_documents({})
         # self.countSecInteractions = self.sec_interactions.count_documents({})
         # self.countProtiens = self.proteins.count_documents({})
@@ -127,9 +23,8 @@ class Database:
             self.prim_interactions.insert_one(interaction)
             try:
                 self.prim_interactions.insert_one(interaction)
-            except:
-                print("interaction already present")
-                # self.prim_interactions.update_one({'x': 1}, {'$inc': {'x': 3}})
+            except error as e:
+                print(e)
         else:
             self.sec_interactions.insert_one(interaction)
     
@@ -137,22 +32,22 @@ class Database:
         """Inserts a protien object into the database"""
         try:
             self.proteins.insert_one(protien)
-        except:
-            print("protein already present")
+        except error as e:
+            print(e)
         
     def insert_taxon(self, taxon):
         """Inserts a taxonomy object into the database"""
         try:
             self.taxonomy.insert_one(taxon)
-        except:
-            print("taxon already present")
-        
+        except error as e:
+            print(e)
+
     def insert_expdet(self, expdet):
         """Inserts a experiment detail object into the database"""
         try:
             self.expdetails.insert_one(expdet)
-        except:
-            print("exp already present")
+        except error as e:
+            print(e)
 
     def remove_all_interactions(self, primary = True):
         if primary:
@@ -221,102 +116,3 @@ class Database:
         print("Number of taxons: " + str(self.taxonomy.count_documents({})))
         print("Number of exp details: " + str(self.expdetails.count_documents({})))
 
-def get_species_name(gene):
-    string_api_url = "https://version-11-5.string-db.org/api"
-    output_format = "tsv-no-header"
-    method = "get_string_ids"
-
-    params = {
-        "identifiers" : gene, # your protein list
-        "species" : 9606, # species NCBI identifier 
-        "limit" : 1, # only one (best) identifier per input protein
-        "echo_query" : 1, # see your input identifiers in the output
-        "caller_identity" : "www.awesome_app.org" # your app name
-    }
-
-    request_url = "/".join([string_api_url, output_format, method])
-    results = requests.post(request_url, data=params)
-
-    for line in results.text.strip().split("\n"):
-        l = line.split("\t")
-        taxonName = l[4]
-        return taxonName
-
-
-def get_uniprot_id(gene):
-    url = 'https://www.uniprot.org/uploadlists/'
-
-    params = {
-        'from': 'GENENAME',
-        'to': 'ACC',
-        'format': 'tab',
-        'query': gene
-    }
-
-    data = urllib.parse.urlencode(params)
-    data = data.encode('utf-8')
-    req = urllib.request.Request(url, data)
-    with urllib.request.urlopen(req) as f:
-        response = f.read()
-    return (response.decode('utf-8').split("\n")[1].split("\t")[1])
-
-def add_biogrid_data(file_name, db, all = True):
-    data = Data()
-    file = open(file_name, 'r')
-    file.readline()
-    n = 1
-    for line in file.readlines():
-        temp = line.split("\t")
-        data.set_proteins(temp[7], get_uniprot_id(temp[7]), temp[15], "")
-        db.insert_protein(data.get_proteins())
-        print("added protein A")
-        data.set_proteins(temp[8], get_uniprot_id(temp[8]), temp[16], "")
-        db.insert_protein(data.get_proteins())
-        print("added protein B")
-        data.set_taxons(temp[15], temp[35])
-        db.insert_taxon(data.get_taxons())
-        print("added taxon A")
-        if temp[15] != temp[16]:
-            data.set_taxons(temp[16], temp[36])
-            db.insert_taxon(data.get_taxons())
-            print("added taxon B")
-        data.set_exps(temp[11], temp[12], temp[13], temp[14])
-        db.insert_expdet(data.get_exps())
-        print("added exp details")
-        data.set_prim_inters(temp[22], temp[0], temp[7], temp[8], "", "")
-        db.insert_interaction(data.get_prim_inters())
-        print("added interaction")
-        print("\n\n")
-        n += 1
-        if n == 6:
-            break
-
-# def add_mint_data(file_name, db):
-#     data = Data()
-
-# def add_string_data(file_name, db):
-#     data = Data()
-
-# def add_mentha_data(file_name, db):
-#     data = Data()
-
-if __name__ == "__main__":
-    PPIDb = Database()
-    print("init database")
-    add_biogrid_data("D:\\tempdata\\Biogrid-all-int.tsv", PPIDb)
-    # PPIDb.remove_everything()
-    # print("removed everything")
-    # PPIDb.get_stats()
-    # print("got stats")
-
-
-    # with open("Datasets/DONTEDIT/ppidb.json", "r") as read_file:
-    #     data = json.load(read_file)
-    # count = 0
-    # for i in data["interactions"]:
-    #     PPIDb.insert_interaction(data["interactions"][str(i)])
-    #     count += 1
-    #     if count == 5:
-    #         break   
-    #     # if count == 20:
-    #     #     break

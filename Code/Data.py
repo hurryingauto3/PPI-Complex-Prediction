@@ -6,6 +6,7 @@ class Data:
             "Gene A" : "", #the official symbol A for protein A
             "Gene B" : "", #the official symbol A for protein B
             "MINT Score" : "", #MINT score for the interaction
+            "Experiment Data" : "" #info on exp details key
         }
         
         self.sec_inter_data = {
@@ -14,7 +15,8 @@ class Data:
             "Gene A" : "", #the official symbol A for protein A
             "Gene B" : "", #the official symbol A for protein B
             "MINT Score" : "", #MINT score for the interaction
-            "Predicted Score" : "" #score from ensemble
+            "Predicted Score" : "", #score from ensemble
+            "Experiment Data" : "" #info on exp details key
         }
         
         self.protein_data = {
@@ -53,20 +55,22 @@ class Data:
     def get_exps(self):
         return self.exp_data   
     
-    def set_prim_inters(self, source, db_id, taxonA, taxonB, score):
+    def set_prim_inters(self, source, db_id, geneA, geneB, score, exp_k):
         self.prim_inter_data["Source"] = source
         self.prim_inter_data["Database ID"] = db_id
-        self.prim_inter_data["Taxon ID A"] = taxonA
-        self.prim_inter_data["Taxon ID B"] = taxonB
+        self.prim_inter_data["Gene A"] = geneA
+        self.prim_inter_data["Gene B"] = geneB
         self.prim_inter_data["MINT Score"] = score
+        self.prim_inter_data["Experiment Data"] = exp_k
         
-    def set_sec_inters(self, source, db_id, taxonA, taxonB, score, pred_score):
+    def set_sec_inters(self, source, db_id, geneA, geneB, score, pred_score, exp_k):
         self.sec_inter_data["Source"] = source
         self.sec_inter_data["Database ID"] = db_id
-        self.sec_inter_data["Taxon ID A"] = taxonA
-        self.sec_inter_data["Taxon ID B"] = taxonB
+        self.sec_inter_data["Gene A"] = geneA
+        self.sec_inter_data["Gene B"] = geneB
         self.sec_inter_data["MINT Score"] = score
         self.sec_inter_data["Predicted Score"] = pred_score
+        self.prim_inter_data["Experiment Data"] = exp_k
         
     def set_proteins(self, gene, uniprotKB, taxon, desc):
         self.protein_data["_id"] = gene
@@ -85,9 +89,5 @@ class Data:
         self.exp_data["Experiment System Type"] = sys_type
         self.exp_data["Author"] = author
         self.exp_data["Publication Source (PubMed ID)"] = pubmed
-        
-        
-        
-    
-        
+
         
