@@ -7,8 +7,8 @@ import json
 if __name__ == "__main__":
 
     ppidb = PPIdb.Database()
-    with open("Datasets/DONTEDIT/ppidb.json", "r") as f:
-        data = json.load(f)
+    # with open("Datasets/DONTEDIT/ppidb.json", "r") as f:
+    #     data = json.load(f)
     # ppidb.remove_everything()
     # count = 0
     # for i in data["protiens"]:
