@@ -1,0 +1,43 @@
+###########BEFORE###########################
+
+Automated protien ID/Data to some extent - Needs improvment
+Dataset Cleaning 
+Dataset *Compatibility
+Dataset Analysis
+Have dataset of known, verified complexes
+What does the Dataset output?
+Search for Github Repos doing similar things
+Search for Papers doing similar things
+Barrier: No exact method being followed
+Limitation of data extraction
+Setup a DB containing protien info - END GOAL FOR EVALS
+Document everything better for final report and presentation
+
+What does the database include:
+
+PPIN of known validity - species[multi, or singular], part of body, validating metrics,  
+Protiens with known properties, gene-name, species, interaction score, function, part-of-body.
+Protiens with unknown propeties
+
+Output[INPUT TO PIPELINE]
+
+Sample Queries [NEED TO BE VALID]
+- PPI of a certain part of the body 
+- PPI of a certain species
+- PPI between two species
+  
+#############AFTER#######################
+Algorithm Work
+
+Haris and Usaid Work:
+
+Given some PPIN -> Identify protien complexes - Cliques, or
+other topological structures
+
+Factor information such as interaction score of protiens
+when prediction complexes
+
+Enhance the data by identifying properties of protiens with
+unkown properties
+
+
