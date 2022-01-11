@@ -1,58 +1,91 @@
+from os import error
 import pymongo
 
 class Database:
 
-    def __init__(self, port) -> None:
-        self.clientDB = pymongo.MongoClient("mongodb://localhost:" + str(port) + "/")
+    def __init__(self) -> None:
+        self.clientDB = pymongo.MongoClient("mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
         self.ppiDB = self.clientDB["PPIdb"]
-        self.Interactions = self.ppiDB["Interactions"]
-        self.Protien = self.ppiDB["Protien"]
-        self.InteractionCount = self.ppiDB.Interactions.count_documents({})
-        self.ProtienCount = self.ppiDB.Protien.count_documents({})
+        self.prim_interactions = self.ppiDB["prim-interactions"]
+        self.sec_interactions = self.ppiDB["sec-interactions"]
+        self.proteins = self.ppiDB["proteins"]
+        self.taxonomy = self.ppiDB["taxonomy"]
+        self.expdetails = self.ppiDB["exp-details"]
+        # self.countPrimInteractions = self.prim_interactions.count_documents({})
+        # self.countSecInteractions = self.sec_interactions.count_documents({})
+        # self.countProtiens = self.proteins.count_documents({})
+
         print("Database connected")
 
-    def insert_interaction(self, interaction):
+    def insert_interaction(self, interaction, primary = True, geneA = "", geneB = "", score = ""):
         """Inserts an interaction object into the database"""
-        self.ppiDB.Interactions.insert_one(interaction)
-        self.update_stats("Interaction")
+        if primary:
+            try:
+                self.prim_interactions.insert_one(interaction)
+            except error as e:
+                print(e)
+        else:
+            self.sec_interactions.insert_one(interaction)
     
-    def insert_protien(self, protien):
+    def insert_protein(self, protien):
         """Inserts a protien object into the database"""
-        self.ppiDB.Protien.insert_one(protien)
-        self.update_stats("Protien")
+        try:
+            self.proteins.insert_one(protien)
+        except error as e:
+            print(e)
+        
+    def insert_taxon(self, taxon):
+        """Inserts a taxonomy object into the database"""
+        try:
+            self.taxonomy.insert_one(taxon)
+        except error as e:
+            print(e)
+
+    def insert_expdet(self, expdet):
+        """Inserts a experiment detail object into the database"""
+        try:
+            self.expdetails.insert_one(expdet)
+        except error as e:
+            print(e)
+
+    def remove_all_interactions(self, primary = True):
+        if primary:
+            self.prim_interactions.delete_many({})
+        else:
+            self.sec_interactions.delete_many({})
+        
+    def remove_all_taxons(self):
+        self.taxonomy.delete_many({})
+        
+    def remove_all_expdet(self):
+        self.expdetails.delete_many({})
+        
+    def remove_all_proteins(self):
+        self.proteins.delete_many({})   
     
-    def remove_all_interactions(self):
-        self.Interactions.delete_many({})
-        self.update_stats("Interaction")
-    
-    def remove_all_protiens(self):
-        self.Protien.delete_many({})
-        self.update_stats("Protien")
-    
-    def remove_interaction(self, interaction):
-        self.Interactions.delete_one(interaction)
-        self.update_stats("Interaction")
-    
+    def remove_prim_interaction(self, interaction):
+        for i in self.get_interactions():
+            if interaction == i:
+                self.prim_interactions.delete_one(i) 
+                 
+    def remove_sec_interaction(self, interaction):
+        for i in self.get_interactions(False):
+            if interaction == i:
+                self.sec_interactions.delete_one(i)  
+                
     def remove_protien(self, protien):
-        self.Protien.delete_one(protien)
-        self.update_stats("Protien")
-    
-    def update_stats(self, collection):
-        if collection == "Interaction":
-            self.ppiDB.Statistics.Interactions = self.ppiDB.Interactions.count_documents({})
-        elif collection == "Protien":
-            self.ppiDB.Statistics.Protien = self.ppiDB.Protien.count_documents({})
-    
-    def get_sats(self):
-        print("Database holds " + str(self.InteractionCount) + " interactions")
-        print("Database holds " + str(self.ProtienCount) + " protiens")
-        return (self.ppiDB.Statistics.Interactions, self.ppiDB.Statistics.Protien)
+        for i in self.get_protiens():
+            if protien == i:
+                self.proteins.delete_one(i)
 
-    def get_interactions(self):
-        return self.ppiDB.Interactions.find()
+    def get_interactions(self, primary = True):
+        if primary:
+            return self.prim_interactions.find()
+        else:
+            return self.sec_interactions.find()
 
-    def get_protien(self):
-        return self.Protien.find()
+    def get_protiens(self):
+        return self.proteins.find()
 
     def get_interactions_by_protien(self, protien):
         pass
@@ -63,8 +96,22 @@ class Database:
     def get_interactions_by_score(self, score):
         pass
 
-if __name__ == "__main__":
-    PPIDB = Database(27017)
-    PPIDB.remove_all_interactions()
-    PPIDB.remove_all_protiens()
-    PPIDB.get_sats()
+    def get_all_prots(self):
+        """Returns a list of nodes in the graph"""
+        return self.proteins.find()
+        pass
+    
+    def remove_everything(self):
+        self.remove_all_expdet()
+        self.remove_all_interactions()
+        self.remove_all_interactions(False)
+        self.remove_all_proteins()
+        self.remove_all_taxons()
+        
+    def get_stats(self):
+        print("Number of primary interactions: " + str(self.prim_interactions.count_documents({})))
+        print("Number of secondary interactions: " + str(self.sec_interactions.count_documents({})))
+        print("Number of protiens: " + str(self.proteins.count_documents({})))
+        print("Number of taxons: " + str(self.taxonomy.count_documents({})))
+        print("Number of exp details: " + str(self.expdetails.count_documents({})))
+
