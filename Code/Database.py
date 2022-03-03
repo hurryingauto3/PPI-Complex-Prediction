@@ -102,7 +102,7 @@ class Database:
         pass
     
     def remove_everything(self):
-        self.remove_all_expdet()
+        self.remove_all_expdet()        
         self.remove_all_interactions()
         self.remove_all_interactions(False)
         self.remove_all_proteins()
