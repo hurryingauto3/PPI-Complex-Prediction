@@ -1,3 +1,4 @@
+import pymongo
 import urllib.parse
 import urllib.request
 import requests
@@ -16,21 +17,40 @@ class Data:
             "Predicted Score" : "", #predicted score for interaction produced by our algo (is "-" if primary)
             "Experiment ID" : "" #_id in the experiment table for the interaction
         }
-
+        
         self.protein_data = {
-@@ -46,11 +39,8 @@ def __init__(self) -> None:
+            "_id" : "",
+            "Gene" : "", 
+            "UniprotKB AC" : "",
+            "Taxon ID" : "",
+            "Description" : ""
+        }
+        
+        self.taxon_data = {
+            "_id" : "",
+            "Taxon ID" : "",
+            "Species Name" : "" 
+        }
+        
+        self.exp_data = {
+            "Experimental System" : "",
+            "Experiment System Type" : "",
+            "Author" : "",
             "Publication Source (PubMed ID)" : ""
         }
-
+    
     def get_inters(self):
         return self.inter_data 
-
+    
     def get_proteins(self):
         return self.protein_data
-@@ -61,29 +51,23 @@ def get_taxons(self):
+    
+    def get_taxons(self):
+        return self.taxon_data
+    
     def get_exps(self):
         return self.exp_data   
-
+    
     def set_inters(self, source, db_id, GeneA, GeneB, score, type, pred_score, exp_id):
         self.inter_data["Source"] = source
         self.inter_data["Database ID"] = db_id
@@ -40,18 +60,31 @@ class Data:
         self.inter_data["Type of data"] = type
         self.inter_data["Predicted Score"] = pred_score
         self.inter_data["Experiment ID"] = exp_id
-
-
+        
+        
     def set_proteins(self, gene, uniprotKB, taxon, desc):
         self.protein_data["_id"] = gene
         self.protein_data["Gene"] = gene
         self.protein_data["UniprotKB AC"] = uniprotKB
         self.protein_data["Taxon ID"] = taxon
         self.protein_data["Description"] = desc
-
+    
     def set_taxons(self, taxon, species):
         self.taxon_data["_id"] = taxon
-@@ -104,34 +88,24 @@ def __init__(self) -> None:
+        self.taxon_data["Taxon ID"] = taxon
+        self.taxon_data["Species Name"] = species
+        
+    def set_exps(self, sys, sys_type, author, pubmed):
+        self.exp_data["Experimental System"] = sys
+        self.exp_data["Experiment System Type"] = sys_type
+        self.exp_data["Author"] = author
+        self.exp_data["Publication Source (PubMed ID)"] = pubmed
+
+        
+class Database:
+
+    def __init__(self) -> None:
+        self.clientDB = pymongo.MongoClient("mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
         print("started client")
         self.ppiDB = self.clientDB["PPIdb"]
         print("init DB")
@@ -73,29 +106,55 @@ class Data:
                 self.interactions.insert_one(interaction)
             except:
                 print("interaction already present")
-
+    
     def insert_protein(self, protien):
         """Inserts a protien object into the database"""
-@@ -156,9 +130,7 @@ def insert_expdet(self, expdet):
+        try:
+            self.proteins.insert_one(protien)
+        except:
+            print("protein already present")
+        
+    def insert_taxon(self, taxon):
+        """Inserts a taxonomy object into the database"""
+        try:
+            self.taxonomy.insert_one(taxon)
+        except:
+            print("taxon already present")
+        
+    def insert_expdet(self, expdet):
+        """Inserts a experiment detail object into the database"""
+        try:
+            self.expdetails.insert_one(expdet)
+        except:
+            print("exp already present")
 
     def remove_all_interactions(self, primary = True):
         if primary:
             self.interactions.delete_many({})
-
+        
     def remove_all_taxons(self):
         self.taxonomy.delete_many({})
-@@ -169,10 +141,10 @@ def remove_all_expdet(self):
+        
+    def remove_all_expdet(self):
+        self.expdetails.delete_many({})
+        
     def remove_all_proteins(self):
         self.proteins.delete_many({})   
-
+    
     def remove_interaction(self, interaction):
         for i in self.get_interactions():
             if interaction == i:
                 self.interactions.delete_one(i) 
-
+                 
     def remove_sec_interaction(self, interaction):
         for i in self.get_interactions(False):
-@@ -186,26 +158,35 @@ def remove_protien(self, protien):
+            if interaction == i:
+                self.sec_interactions.delete_one(i)  
+                
+    def remove_protien(self, protien):
+        for i in self.get_protiens():
+            if protien == i:
+                self.proteins.delete_one(i)
 
     def get_interactions(self, primary = True):
         if primary:
@@ -112,10 +171,10 @@ class Data:
 
     def get_interactions_by_score(self, score):
         return self.interactions.find({"MINT Score" : score})
-
+    
     def get_interactions_by_database(self, database_name):
         return self.interactions.find({"Source" : database_name})
-
+    
     def get_interactions_by_species(self, species_name):
         taxon_id = self.taxonomy.find_one({"Species Name" : species_name})["Taxon ID"]
         proteins = self.proteins.find({"Taxon ID" : taxon_id})
@@ -123,17 +182,19 @@ class Data:
         for protein in proteins:
             interactions.append(self.get_interactions_by_protien(protein))
         return interactions
-
+        
 
     def get_all_prots(self):
         """Returns a list of nodes in the graph"""
         return self.proteins.find()
-
+    
     def remove_everything(self):
         self.remove_all_expdet()
-@@ -215,20 +196,19 @@ def remove_everything(self):
+        self.remove_all_interactions()
+        self.remove_all_interactions(False)
+        self.remove_all_proteins()
         self.remove_all_taxons()
-
+        
     def get_stats(self):
         print("Number of primary interactions: " + str(self.interactions.count_documents({})))
         print("Number of protiens: " + str(self.proteins.count_documents({})))
@@ -151,7 +212,31 @@ def get_species_name(gene, species):
         "limit" : 1, # only one (best) identifier per input protein
         "echo_query" : 1, # see your input identifiers in the output
         "caller_identity" : "www.awesome_app.org" # your app name
-@@ -260,55 +240,124 @@ def get_uniprot_id(gene):
+    }
+
+    request_url = "/".join([string_api_url, output_format, method])
+    results = requests.post(request_url, data=params)
+
+    for line in results.text.strip().split("\n"):
+        l = line.split("\t")
+        taxonName = l[4]
+        return taxonName
+
+
+def get_uniprot_id(gene):
+    url = 'https://www.uniprot.org/uploadlists/'
+
+    params = {
+        'from': 'GENENAME',
+        'to': 'ACC',
+        'format': 'tab',
+        'query': gene
+    }
+
+    data = urllib.parse.urlencode(params)
+    data = data.encode('utf-8')
+    req = urllib.request.Request(url, data)
+    with urllib.request.urlopen(req) as f:
         response = f.read()
     return (response.decode('utf-8').split("\n")[1].split("\t")[1])
 
@@ -263,16 +348,24 @@ if __name__ == "__main__":
     Mentha_db_addr = "D:\\Kaavish\\tempData\\mentha-human-int.txt"
     PPIDb = Database()
     print("init database")
-
+    
     add_biogrid_data(Biogrid_db_addr, PPIDb)
     add_mint_data(MINT_db_addr, PPIDb)
     add_mentha_data(Mentha_db_addr, PPIDb)
-
+    
     # PPIDb.remove_everything()
     # print("removed everything")
-
+    
     PPIDb.get_stats()
     print("got stats")
 
     # with open("Datasets/DONTEDIT/ppidb.json", "r") as read_file:
     #     data = json.load(read_file)
+    # count = 0
+    # for i in data["interactions"]:
+    #     PPIDb.insert_interaction(data["interactions"][str(i)])
+    #     count += 1
+    #     if count == 5:
+    #         break   
+    #     # if count == 20:
+    #     #     break
