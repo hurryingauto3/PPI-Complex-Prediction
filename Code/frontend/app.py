@@ -9,12 +9,11 @@ nav = Nav()
 @nav.navigation()
 def mynavbar():
     return Navbar(
-        'mysite',
+        '',
         View('Home', 'index'),
-        View('About', 'about'),
-        View('Contact', 'contact'),
-    )
-
+        View('Protien Networks', 'protnetwork'),
+        # View('Clustering', 'clustering'),
+        View('Statistics', 'statistics'))
 # ...
 
 app = Flask(__name__)
@@ -25,7 +24,7 @@ nav.init_app(app)
 def index():
     return render_template('index.html')
 
-@app.route('/networks')
+@app.route('/protnetwork    ')
 def protnetwork():
     return render_template('protnetwork.html')
 
@@ -37,5 +36,7 @@ def clustervis():
 def statistics():
     return render_template('statistics.html')
 
+
 if __name__ == '__main__':
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.run(debug=True)
