@@ -343,9 +343,9 @@ def add_mentha_data(file_name, db, species):
 #     data = Data()
 
 if __name__ == "__main__":
-    Biogrid_db_addr = "D:\\Kaavish\\tempdata\\Biogrid-all-int.tsv"
-    MINT_db_addr = "D:\\Kaavish\\tempData\\MINT-all-int.txt"
-    Mentha_db_addr = "D:\\Kaavish\\tempData\\mentha-human-int.txt"
+    Biogrid_db_addr = "./tempdata/Biogrid-all-int.tsv"
+    MINT_db_addr = "./tempData/MINT-all-int.txt"
+    Mentha_db_addr = "./tempData/mentha-human-int.txt"
     PPIDb = Database()
     print("init database")
     

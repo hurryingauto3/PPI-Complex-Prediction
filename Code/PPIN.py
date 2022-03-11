@@ -1,6 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import Database as PPIdb
+import DatabaseOG as PPIdb
 from pyvis.network import Network
 
 class PPIN:   
@@ -13,7 +13,7 @@ class PPIN:
 
     def get_graph_from_db(self, db):
         for i in db.get_interactions():
-            self.graph.add_edge(i["geneA"], i["geneB"])
+            self.graph.add_edge(i["Gene A"], i["Gene B"])
         
     def display(self):
         net = Network(notebook=True, bgcolor="#222222", font_color="white", height="100%", width="100%")
@@ -34,3 +34,4 @@ if __name__ == "__main__":
     
     ppidb = PPIdb.Database()
     PPIN = PPIN(ppidb)
+    print(PPIN.get_interactions())
