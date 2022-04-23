@@ -4,6 +4,7 @@ import urllib.request
 import requests
 import Data
 import json
+import time
 
 class Data: 
     def __init__(self) -> None:
@@ -346,6 +347,7 @@ def add_mentha_data(file_name, db, species):
 #     data = Data()
 
 if __name__ == "__main__":
+    start = time.time()
     Biogrid_db_addr = "./tempdata/Biogrid-all-int.tsv"
     MINT_db_addr = "./tempData/MINT-all-int.txt"
     Mentha_db_addr = "./tempData/mentha-human-int.txt"
@@ -364,6 +366,7 @@ if __name__ == "__main__":
 
     for prot in PPIDb.get_all_prots(5):
         print(prot)
+    print('time taken:', time.time() - start)
     # with open("Datasets/DONTEDIT/ppidb.json", "r") as read_file:
     #     data = json.load(read_file)
     # count = 0
