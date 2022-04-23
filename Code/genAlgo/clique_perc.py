@@ -19,6 +19,7 @@ sample_adj_matrix = {
 
 def Clique_Percolation(adj_matrix, k):
     start = time.time()
+    #create 
     G = nx.Graph(adj_matrix)
     cliques = [clique for clique in nx.enumerate_all_cliques(G) if len(clique) == k]
     
