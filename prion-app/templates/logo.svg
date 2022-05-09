@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg viewBox="-800 -800 1600 1600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<g>
+		<title>Red and Blue Kruhotvar, by Adam Stanislav</title>
+		<g id="L7">
+			<g id="L6">
+				<g id="L5">
+					<g id="L4">
+						<g id="L3">
+							<g id="L2">
+								<g id="L1">
+									<g id="RB" stroke="#000" stroke-width="3">
+										<path fill="#eb3a00" d="m-65 50c21.27-12.749 44.847-19.843 69.65-19.843 37.96 0 73.047 16.617 101.43 44.713-56.021 16.658-98.898 93.934-101.321 187.89l-0.109-0.001c-46.605 0-84.443 50.724-84.443 113.202 0 107.237 84.443 357.457 84.443 357.457s53.868-159.621 75.552-278.503c14.919 10.222 31.322 15.875 48.54 15.875h0.036c-50.628 151.418-124.128 307.551-124.128 307.551s-171.005-363.259-171.005-518.941c0-11.159 0.596-22.133 1.75-32.885 14.267 15.728 32.53 25.176 52.427 25.176 45.603 0 82.627-49.633 82.627-110.767 0-37.628-14.026-70.899-35.449-90.924z"/>
+										<path fill="#003ae9" d="m166 290c-33.31-44.653-99.766-28.07-148.313 37.01-48.547 65.08-60.917 154.169-27.608 198.823 10.531-40.91 34.767-95.151 69.855-142.189 35.088-47.037 75.549-79.526 106.066-93.644z"/>
+									</g>
+									<use xlink:href="#RB" transform="rotate(180)"/>
+								</g>
+								<use xlink:href="#L1" transform="rotate(90)"/>
+							</g>
+							<use xlink:href="#L2" transform="rotate(45)"/>
+						</g>
+						<use xlink:href="#L3" transform="scale(-1,1)"/>
+					</g>
+					<use xlink:href="#L4" transform="rotate(22.5)"/>
+				</g>
+				<use xlink:href="#L5" transform="rotate(11.25)"/>
+			</g>
+			<use xlink:href="#L6" transform="rotate(5.625)"/>
+		</g>
+		<use xlink:href="#L7" transform="rotate(2.8125)"/>
+	</g>
+</svg>
