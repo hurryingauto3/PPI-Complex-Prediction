@@ -4,6 +4,7 @@ import urllib.request
 import requests
 import Data
 import json
+import time
 
 class Data: 
     def __init__(self) -> None:
@@ -184,9 +185,12 @@ class Database:
         return interactions
         
 
-    def get_all_prots(self):
+    def get_all_prots(self, limit = -1):
         """Returns a list of nodes in the graph"""
-        return self.proteins.find()
+        if limit == -1:
+            return self.proteins.find()
+        else:
+            return self.proteins.find(limit = limit)
     
     def remove_everything(self):
         self.remove_all_expdet()
@@ -343,15 +347,16 @@ def add_mentha_data(file_name, db, species):
 #     data = Data()
 
 if __name__ == "__main__":
+    start = time.time()
     Biogrid_db_addr = "./tempdata/Biogrid-all-int.tsv"
     MINT_db_addr = "./tempData/MINT-all-int.txt"
     Mentha_db_addr = "./tempData/mentha-human-int.txt"
     PPIDb = Database()
     print("init database")
     
-    add_biogrid_data(Biogrid_db_addr, PPIDb)
-    add_mint_data(MINT_db_addr, PPIDb)
-    add_mentha_data(Mentha_db_addr, PPIDb)
+    # add_biogrid_data(Biogrid_db_addr, PPIDb)
+    # add_mint_data(MINT_db_addr, PPIDb)
+    # add_mentha_data(Mentha_db_addr, PPIDb)
     
     # PPIDb.remove_everything()
     # print("removed everything")
@@ -359,6 +364,9 @@ if __name__ == "__main__":
     PPIDb.get_stats()
     print("got stats")
 
+    for prot in PPIDb.get_all_prots(5):
+        print(prot)
+    print('time taken:', time.time() - start)
     # with open("Datasets/DONTEDIT/ppidb.json", "r") as read_file:
     #     data = json.load(read_file)
     # count = 0
