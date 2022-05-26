@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-  Literature Research
+    Database
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,6 @@
                 <th scope="col">Protein ID</th>
                 <th scope="col">Protein Name</th>
                 <th scope="col">Code</th>
-                <th scope="col">Price</th>
                 <th scope="col">Options</th>
             </tr>
         </thead>
@@ -22,7 +21,6 @@
                     <td>{{ item.id }}</td>
                     <td>{{ item.name }}</td>
                     <td>{{ item.barcode }}</td>
-                    <td>{{ item.price }}$</td>
                     <td>
                         <button class="btn btn-outline btn-info">More Info</button>
                         <button class="btn btn-outline btn-success">Visualization</button>
