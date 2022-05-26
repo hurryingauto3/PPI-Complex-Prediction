@@ -4,16 +4,7 @@ from flask_navigation import Navigation
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 
-# nav = Nav()
-# @nav.navigation()
-# def mynavbar():
-#     return Navbar(
-#         '',
-#         View('Home', 'index'),
-#         View('Protien Networks', 'protnetwork'),
-#         # View('Clustering', 'clustering'),
-#         View('Statistics', 'statistics'))
-# # ...
+
 app = Flask(__name__)
 nav = Navigation(app)
 
@@ -28,7 +19,7 @@ nav.Bar('top', [
 def index():
     return render_template('index.html')
 
-@app.route('/protnetwork    ')
+@app.route('/protnetwork')
 def protnetwork():
     return render_template('protnetwork.html')
 
@@ -38,8 +29,8 @@ def clustervis():
 
 @app.route('/statistics')
 def statistics():
-    return render_template('statistics.html')
-
+    stats = [1, 2, 3, 4, 5]
+    return render_template('statistics.html', stats=stats)
 
 if __name__ == '__main__':
     app.config['TEMPLATES_AUTO_RELOAD'] = True

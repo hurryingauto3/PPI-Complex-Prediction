@@ -1,5 +1,5 @@
 from knapsack import *
-from graphcol import *
+from genAlgo.graphcol import *
 from tsp import *
 
 key = {"fp": "Fitness Proportion", "bt": "Binary Tournament", "tr": "Truncation", "rd": "Random", "rb": "Rank Based"}

@@ -21,7 +21,6 @@ class Cluster:
         self.complex.add_edges_from(itertools.combinations(self.proteins, 2))
         print(self.complex.edges)
 
-
 def read_file(path): 
     f = open(path)
     complex_data = json.load(f)
