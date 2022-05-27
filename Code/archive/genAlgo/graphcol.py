@@ -1,4 +1,4 @@
-from evolalgo import *
+from genAlgo.evolalgo import *
 
 
 class graphcoloring(evolAlgo):
