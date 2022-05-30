@@ -1,6 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import DatabaseOG as PPIdb
+import database.DatabaseOG as PPIdb
 from pyvis.network import Network
 
 class PPIN:   

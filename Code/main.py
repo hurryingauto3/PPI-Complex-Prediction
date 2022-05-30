@@ -1,4 +1,4 @@
-from graphNN.graphNN import GraphNN
+from algorithms.graphNN import GraphNN
 from genAlgo.evolalgo import EvolAlgo
 from cliquePerc.clique_perc import CliquePerc
 from database.DatabaseOG import DatabaseOG

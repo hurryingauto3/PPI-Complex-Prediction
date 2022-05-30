@@ -18,10 +18,8 @@ def init_app():
             nav.Item('Statistics', 'statistics')
         ])
         nav.init_app(app)
-        
         # Import parts of our core Flask app
         from . import routes
-
         # Import Dash application
         from .dash_app1.dashboard import create_dashboard
         app = create_dashboard(app)

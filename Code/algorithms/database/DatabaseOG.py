@@ -2,14 +2,12 @@ import pymongo
 import urllib.parse
 import urllib.request
 import requests
-import Data
 import json
 import time
 from Bio import Entrez
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
-
 
 class Data:
     def __init__(self) -> None:
@@ -205,7 +203,7 @@ class Database:
         
         interactions = []
         for protein in prim_proteins:
-            print('Protein Gene Name:', protein['Gene'])
+            # print('Protein Gene Name:', protein['Gene'])
             interactions += self.get_interactions_by_protein(protein['Gene'])
         return self.get_complete_network(interactions)
 
@@ -406,35 +404,35 @@ def add_mentha_data(file_name, db, species):
             break
 
 
-if __name__ == "__main__":
-    start = time.time()
-    Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
-    MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
-    Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
-    PPIDb = Database()
-    print("init database")
+# if __name__ == "__main__":
+#     start = time.time()
+#     Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
+#     MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
+#     Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
+#     PPIDb = Database()
+#     print("init database")
 
-    # add_biogrid_data(Biogrid_db_addr, PPIDb)
-    # add_mint_data(MINT_db_addr, PPIDb)
-    # add_mentha_data(Mentha_db_addr, PPIDb)
+#     # add_biogrid_data(Biogrid_db_addr, PPIDb)
+#     # add_mint_data(MINT_db_addr, PPIDb)
+#     # add_mentha_data(Mentha_db_addr, PPIDb)
 
-    # PPIDb.remove_all_expdet()
-    # PPIDb.remove_all_interactions()
-    # PPIDb.remove_all_interactions(False)
-    # PPIDb.remove_everything()
-    # print("removed everything")
+#     # PPIDb.remove_all_expdet()
+#     # PPIDb.remove_all_interactions()
+#     # PPIDb.remove_all_interactions(False)
+#     # PPIDb.remove_everything()
+#     # print("removed everything")
 
-    PPIDb.get_stats()
-    print("got stats")
+#     PPIDb.get_stats()
+#     print("got stats")
 
-    # for prot in PPIDb.get_all_prots(5):
-    #     print(prot)
+#     # for prot in PPIDb.get_all_prots(5):
+#     #     print(prot)
 
-    # print(PPIDb.get_interactions_by_species("Caenorhabditis elegans"))
+#     # print(PPIDb.get_interactions_by_species("Caenorhabditis elegans"))
     
-    query = PPIDb.get_interactions_by_species("Saccharomyces cerevisiae")
-    # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
-    # print(query)
-    print(PPIDb.get_graph(query))
-    print(PPIDb.get_adj_matrix(query))
+#     query = PPIDb.get_interactions_by_species("Saccharomyces cerevisiae")
+#     # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
+#     # print(query)
+#     print(PPIDb.get_graph(query))
+#     print(PPIDb.get_adj_matrix(query))
     

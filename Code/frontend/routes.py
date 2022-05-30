@@ -8,7 +8,6 @@ def index():
 
 @app.route('/protnetwork')
 def protnetwork():
-    
     return render_template('protnetwork.html')
 
 @app.route('/clustering')

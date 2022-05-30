@@ -1,2 +1,0 @@
-class graphNN:
-    pass
