@@ -1,4 +1,4 @@
-# TODO: - code mutation
+# TODO: - write createoffspring function 
 #       - main run function
 #       - integrate actual data
 
@@ -209,18 +209,3 @@ ga_instance = genAlgo(sample, 50, 5, 5, 5, 5, 0.1, 0.4, 3, 0.2)
 parent1, parent2 = ga_instance.select_parent()
 # print(len(parent1))
 ga_instance.mutate(list(parent1.keys())[0])
-#  x = {1:3, 2:12, 3:9, 4:4, 5:10}
-# a = (1,3,4,6)
-# a = list([2,3,5])
-# print(a)
-# x_sort = dict(sorted(x.items(), key=lambda item: item[1]))
-# print(x_sort)
-# x_sel = {k: x_sort[k] for k in list(x_sort)[:2]}
-# print(x_sel)
-
-
-# a = ((1,2,424), (1313, 1212), (133, 535))
-# a = list(a)
-# for i in range(len(a)):
-#     i = 
-# print(a)

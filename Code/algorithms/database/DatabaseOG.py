@@ -265,6 +265,11 @@ class Database:
             G.add_edge(i['Gene A'], i['Gene B'], weight=i['MINT Score'])
         return G
 
+    def get_unweighted_graph(self, interactions) -> nx.Graph:
+        G = nx.Graph()
+        for i in interactions:
+            G.add_edge(i['Gene A'], i['Gene B'])
+
     def get_adj_matrix(self, interactions):
         G = self.get_graph(interactions)
         return nx.to_numpy_matrix(G), G.nodes()
