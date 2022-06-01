@@ -103,9 +103,7 @@ class Data:
 class Database:
 
     def __init__(self) -> None:
-        self.clientDB = pymongo.MongoClient(
-            "mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
-        print("started client")
+        self.clientDB = pymongo.MongoClient("mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
         self.ppiDB = self.clientDB["PPIdb"]
         self.interactions = self.ppiDB["interactions"]
         self.proteins = self.ppiDB["proteins"]
@@ -317,25 +315,25 @@ def add_biogrid_data(file_name, db):
             temp = line.split("\t")
             data.set_proteins(temp[7], get_uniprot_id(temp[7]), temp[15], "")
             db.insert_protein(data.get_proteins())
-            print("added protein A :", data.get_proteins())
+            # print("added protein A :", data.get_proteins())
             data.set_proteins(temp[8], get_uniprot_id(temp[8]), temp[16], "")
             db.insert_protein(data.get_proteins())
-            print("added protein B :", data.get_proteins())
+            # print("added protein B :", data.get_proteins())
             data.set_taxons(temp[15], temp[35])
             db.insert_taxon(data.get_taxons())
-            print("added taxon A :", data.get_taxons())
+            # print("added taxon A :", data.get_taxons())
             if temp[15] != temp[16]:
                 data.set_taxons(temp[16], temp[36])
                 db.insert_taxon(data.get_taxons())
-                print("added taxon B :", data.get_taxons())
+                # print("added taxon B :", data.get_taxons())
             data.set_exps(temp[11], temp[12], temp[13], temp[14])
             db.insert_expdet(data.get_exps())
-            print("added exp details :", data.get_exps())
+            # print("added exp details :", data.get_exps())
             data.set_inters(temp[22], temp[0], temp[7], temp[8],
                             "", "Primary", "", data.get_exps()["_id"])
             db.insert_interaction(data.get_inters())
-            print("added interaction :", data.get_inters())
-            print("\n\n")
+            # print("added interaction :", data.get_inters())
+            # print("\n\n")
         n += 1
 
 def add_mint_data(file_name, db):
@@ -349,30 +347,30 @@ def add_mint_data(file_name, db):
             pass
         else:
             data = Data()
-            print(line)
+            # print(line)
             # Protein A;Gene A;Taxon A;Protein B;Gene B;Taxon B;Score;PMID
             temp = line.split(";")
             temp[7] = temp[7].replace(" \n", "")
             data.set_proteins(temp[1], get_uniprot_id(temp[1]), temp[2], "")
             db.insert_protein(data.get_proteins())
-            print("added protein A :", data.get_proteins())
+            # print("added protein A :", data.get_proteins())
             data.set_proteins(temp[4], get_uniprot_id(temp[4]), temp[5], "")
             db.insert_protein(data.get_proteins())
-            print("added protein B :", data.get_proteins())
+            # print("added protein B :", data.get_proteins())
             data.set_taxons(temp[2], get_species_name(int(temp[2])))
             db.insert_taxon(data.get_taxons())
-            print("added taxon A :", data.get_taxons())
+            # print("added taxon A :", data.get_taxons())
             if temp[2] != temp[5]:
                 data.set_taxons(temp[5], get_species_name(int(temp[5])))
                 db.insert_taxon(data.get_taxons())
-                print("added taxon B :", data.get_taxons())
+                # print("added taxon B :", data.get_taxons())
             data.set_exps("", "", "", temp[7])
             db.insert_expdet(data.get_exps())
-            print("added exp details :", data.get_exps())
+            # print("added exp details :", data.get_exps())
             data.set_inters("MINT", "", temp[1], temp[4], float(
                 temp[6]), "Primary", "", data.get_exps()["_id"])
             db.insert_interaction(data.get_inters())
-            print("added interaction :", data.get_inters())
+            # print("added interaction :", data.get_inters())
             print("\n\n")
         n += 1
 
@@ -389,25 +387,25 @@ def add_mentha_data(file_name, db, species):
         temp = line.split(";")
         data.set_proteins(temp[1], get_uniprot_id(temp[1]), taxon, "")
         db.insert_protein(data.get_proteins())
-        print("added protein A")
+        # print("added protein A")
         data.set_proteins(temp[3], get_uniprot_id(temp[3]), taxon, "")
         db.insert_protein(data.get_proteins())
-        print("added protein B")
+        # print("added protein B")
         data.set_taxons(taxon, get_species_name(taxon))
         db.insert_taxon(data.get_taxons())
-        print("added taxon A")
+        # print("added taxon A")
         if temp[15] != temp[16]:
             data.set_taxons(taxon, get_species_name(taxon))
             db.insert_taxon(data.get_taxons())
-            print("added taxon B")
+            # print("added taxon B")
         data.set_exps("", "", "", "")
         db.insert_expdet(data.get_exps())
-        print("added exp details")
+        # print("added exp details")
         data.set_inters("Mentha", "", temp[1], temp[3], float(
             temp[5]), "Primary", "", data.get_exps()["_id"])
         db.insert_interaction(data.get_inters())
-        print("added interaction")
-        print("\n\n")
+        # print("added interaction")
+        # print("\n\n")
         n += 1
         if n == 6:
             break
