@@ -21,7 +21,6 @@ class Data:
             # primary or secondary data (produced by our algo)
             "Type of data": "",
             # predicted score for interaction produced by our algo (is "-" if primary)
-            "Predicted Score": "",
             "Experiment ID": ""  # _id in the experiment table for the interaction
         }
 
@@ -30,7 +29,14 @@ class Data:
             "Gene": "",
             "UniprotKB AC": "",
             "Taxon ID": "",
-            "Description": ""
+            "Description": "",
+            "ProtLen": "",
+            "ProtWeight": "",
+            "ClusterCof": "",
+            "NumNeightbors": "",
+            "UniquePep": "",
+            "VarCount": "",
+            "ProtAffinity": ""   
         }
 
         self.taxon_data = {
@@ -59,7 +65,7 @@ class Data:
     def get_exps(self):
         return self.exp_data
 
-    def set_inters(self, source, db_id, GeneA, GeneB, score, type, pred_score, exp_id):
+    def set_inters(self, source, db_id, GeneA, GeneB, score, type, exp_id):
         self.inter_data["_id"] = GeneA+"_"+GeneB
         self.inter_data["Source"] = source
         self.inter_data["Database ID"] = db_id
@@ -67,15 +73,21 @@ class Data:
         self.inter_data["Gene B"] = GeneB
         self.inter_data["MINT Score"] = score
         self.inter_data["Type of data"] = type
-        self.inter_data["Predicted Score"] = pred_score
         self.inter_data["Experiment ID"] = exp_id
 
-    def set_proteins(self, gene, uniprotKB, taxon, desc):
+    def set_proteins(self, gene, uniprotKB, taxon, desc, protlen, protweight, clustercof, numneighbors, uniquepep, varcount, protAf):
         self.protein_data["_id"] = gene
         self.protein_data["Gene"] = gene
         self.protein_data["UniprotKB AC"] = uniprotKB
         self.protein_data["Taxon ID"] = taxon
         self.protein_data["Description"] = desc
+        self.protein_data["ProtLen"] = protlen
+        self.protein_data["ProtWeight"] = protweight
+        self.protein_data["ClusterCof"] = clustercof
+        self.protein_data["NumNeightbors"] = numneighbors
+        self.prorot_data["UniquePep"] = uniquepep
+        self.protein_data["VarCount"] = varcount
+        self.protein_data["ProtAffinity"] = protAf
 
     def set_taxons(self, taxon, species):
         self.taxon_data["_id"] = taxon
@@ -97,17 +109,14 @@ class Database:
             "mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
         print("started client")
         self.ppiDB = self.clientDB["PPIdb"]
-        print("init DB")
         self.interactions = self.ppiDB["interactions"]
-        print("init interactions")
         self.proteins = self.ppiDB["proteins"]
-        print("init proteins")
         self.taxonomy = self.ppiDB["taxonomy"]
-        print("init taxon")
         self.expdetails = self.ppiDB["exp-details"]
-        print("init exp details")
 
-        print("Database connected")
+        print("Database connection initialiazed")
+
+    # DB editors
 
     def insert_interaction(self, interaction, primary=True, geneA="", geneB="", score=""):
         """Inserts an interaction object into the database"""
@@ -170,6 +179,8 @@ class Database:
         if primary:
             return self.interactions.find()
 
+    # DB getters
+
     def get_proteins(self):
         return self.proteins.find()
 
@@ -186,7 +197,6 @@ class Database:
                 "Gene B" : {"$in" : protein},
             }))
             
-
     def get_interactions_by_type(self, type='Primary'):
         return list(self.interactions.find({"Type of data": type}))
 
@@ -245,7 +255,12 @@ class Database:
             proteins[inter['Gene A']] = None
             proteins[inter['Gene B']] = None
         return self.get_interactions_by_protein(list(proteins.keys()))
-        
+    
+    def get_prot_features(self, prot):
+        pass
+
+    def get_edge_features(self, edge):
+        pass
 
 
 def get_species_name(species):
