@@ -6,101 +6,6 @@ import plotly.graph_objects as go
 import networkx as nx
 import dash_bootstrap_components as dbc
 
-
-def create_dashboard(server):
-    """Create a Plotly Dash dashboard."""
-    dash_app = dash.Dash(
-        server=server,
-        routes_pathname_prefix='/dashapp/',
-        # external_stylesheets=[
-        #     '/static/dist/css/styles.css',
-        # ]
-        external_stylesheets=[dbc.themes.BOOTSTRAP]
-    )
-
-    Human_graph = {
-        1 : {2 : {'weight': 6}, 3 : {'weight': 2}, 4 : {'weight': 8}},
-        2 : {1 : {'weight': 6}},
-        3 : {1 : {'weight': 2}},
-        4 : {1 : {'weight': 8}}
-    }
-    
-    All_graph = {
-        1 : {2 : {'weight': 6}, 3 : {'weight': 2}, 4 : {'weight': 8}},
-        2 : {1 : {'weight': 6},},
-        3 : {1 : {'weight': 2}},
-        4 : {1 : {'weight': 8}, 5 : {'weight': 2}},
-        5 : {4 : {'weight': 2}, 6 : {'weight': 3}},
-        6 : {5 : {'weight': 3}}
-    }
-    
-    species = ['Human', 'All']
-    
-    controls = dbc.Card(
-        [
-            html.Div(
-                [
-                    dbc.Label("Sort by Species"),
-                    dcc.Dropdown(
-                        id="species-variable",
-                        options=[
-                            {"label": i, "value": i} for i in species
-                        ],
-                        value="All",
-                    ),
-                ]
-            ),
-            # html.Div(
-            #     [
-            #         dbc.Label("Sort by Database"),
-            #         dcc.Dropdown(
-            #             id="db-variable",
-            #             options=[
-            #                 {"label": i, "value": i} for i in db
-            #             ],
-            #             value="All",
-            #         ),
-            #     ]
-            # ),
-        ],
-        body=True,
-    )
-    
-    # Create Dash Layout
-    dash_app.layout = dbc.Container(
-        [
-            html.Hr(),
-            dbc.Row(
-                [
-                    dbc.Col(controls, md=4),
-                    dbc.Col(dcc.Graph(id="my-graph")),
-                ],
-                align="center",
-            ),
-        ],
-        fluid=True,
-    )
-    
-    init_callbacks(dash_app, Human_graph, All_graph)
-
-    return dash_app.server
-
-def init_callbacks(dash_app, Human_graph, All_graph):
-    @dash_app.callback(
-        Output("my-graph", "figure"),
-            [
-                Input("species-variable", "value"),
-                Input("db-variable", "value"),
-            ],
-    )
-    def update_output(specie):
-        if specie == 'All':
-            G = nx.Graph(All_graph)
-        else:
-            G = nx.Graph(Human_graph)
-        return networkGraph(G)
-        
-# Plotly figure
 def networkGraph(G):
     # edges = [[EGDE_VAR, 'B'], ['B', 'C'], ['B', 'D']]
     # G = nx.Graph(graph)
@@ -173,3 +78,120 @@ def networkGraph(G):
     # figure
     fig = go.Figure(data=[edge_trace, node_trace, eweights_trace], layout=layout)
     return fig
+
+def create_dashboard(server):
+    """Create a Plotly Dash dashboard."""
+    app = dash.Dash(
+        server=server,
+        routes_pathname_prefix='/dashapp/',
+        external_stylesheets=[dbc.themes.BOOTSTRAP]
+    )
+
+    Human_graph = {
+        1 : {2 : {'weight': 6}, 3 : {'weight': 2}, 4 : {'weight': 8}},
+        2 : {1 : {'weight': 6}},
+        3 : {1 : {'weight': 2}},
+        4 : {1 : {'weight': 8}}
+    }
+
+    All_graph = {
+        1 : {2 : {'weight': 6}, 3 : {'weight': 2}, 4 : {'weight': 8}},
+        2 : {1 : {'weight': 6},},
+        3 : {1 : {'weight': 2}},
+        4 : {1 : {'weight': 8}, 5 : {'weight': 2}},
+        5 : {4 : {'weight': 2}, 6 : {'weight': 3}},
+        6 : {5 : {'weight': 3}}
+    }
+
+    Biogrid_graph = {
+        1 : {4 : {'weight': 8}},
+        4 : {1 : {'weight': 8}, 5 : {'weight': 2}},
+        5 : {4 : {'weight': 2}, 6 : {'weight': 3}},
+        6 : {5 : {'weight': 3}}
+    }
+    
+    species = ['Human', 'All']
+    db = ['Biogrid', 'All']
+    
+    controls = dbc.Card(
+        [
+            html.Div(
+                [
+                    dbc.Label("Sort by Species"),
+                    dcc.Dropdown(
+                        id="species-variable",
+                        options=[
+                            {"label": i, "value": i} for i in species
+                        ],
+                        value="All",
+                    ),
+                ]
+            ),
+            html.Div(
+                [
+                    dbc.Label("Sort by Database"),
+                    dcc.Dropdown(
+                        id="db-variable",
+                        options=[
+                            {"label": i, "value": i} for i in db
+                        ],
+                        value="All",
+                    ),
+                ]
+            ),
+        ],
+        body=True,
+    )
+    
+    # Create Dash Layout
+    app.layout = dbc.Container(
+        [
+            html.H1("Protein Interaction Graph"),
+            html.Hr(),
+            dbc.Row(
+                [
+                    dbc.Col(controls, md=4),
+                    dbc.Col(dcc.Graph(id="my-graph")),
+                ],
+                align="center",
+            ),
+        ],
+        fluid=True,
+    )
+    
+    @app.callback(
+    Output("my-graph", "figure"),
+    [
+        Input("species-variable", "value"),
+        Input("db-variable", "value"),
+    ],
+    )
+    def update_output(specie, db):
+        if specie == 'All' or db == 'All':
+            G = nx.Graph(All_graph)
+        elif specie == 'Human':
+            G = nx.Graph(Human_graph)
+        else:
+            G = nx.Graph(Biogrid_graph)
+        return networkGraph(G)
+    
+    # init_callbacks(dash_app, Human_graph, All_graph)
+
+    return app.server
+
+# def init_callbacks(dash_app, Human_graph, All_graph):
+    # @dash_app.callback(
+    #     Output("my-graph", "figure"),
+    #         [
+    #             Input("species-variable", "value"),
+    #             Input("db-variable", "value"),
+    #         ],
+    # )
+    # def update_output(specie):
+    #     if specie == 'All':
+    #         G = nx.Graph(All_graph)
+    #     else:
+    #         G = nx.Graph(Human_graph)
+    #     return networkGraph(G)
+        
+# Plotly figure
