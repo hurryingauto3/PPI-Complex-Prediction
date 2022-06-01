@@ -209,7 +209,7 @@ class Database:
             {"Gene B": proteinA}
         ]}))
         return len(ls) > 0
-
+    
     def get_interactions_by_type(self, type='Primary'):
         return list(self.interactions.find({"Type of data": type}))
 
