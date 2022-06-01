@@ -1,6 +1,4 @@
-# TODO: - finish elitism selection
-#           - figure out while loop situation
-#       - code mutation
+# TODO: - code mutation
 #       - main run function
 #       - integrate actual data
 
@@ -24,16 +22,19 @@ sample.add_edges_from(edges)
 
 
 class genAlgo(object):
-    def __init__(self, ppin_graph: nx.Graph, pop_size: int, n_offspring: int, num_gens: int, num_iters: int,
-                chromosome_size: int, cluster_size: int, elitism_rate: float):
+    def __init__(self, ppin_graph: nx.Graph, pop_size: int, num_gens: int, num_iters: int,
+                chromosome_size: int, cluster_size: int, elitism_rate: float, mutation_rate: float, 
+                num_changes: int, tau: int):
         self.ppin_graph = ppin_graph
         self.pop_size = pop_size
-        self.n_offspring = n_offspring
         self.num_gens = num_gens
         self.num_iters = num_iters
         self.chromosome_size = chromosome_size
         self.cluster_size = cluster_size 
         self.elitism_rate = elitism_rate
+        self.mutation_rate = mutation_rate
+        self.num_changes = num_changes
+        self.tau = tau
         self.initialize_pop()
 
     
@@ -115,7 +116,7 @@ class genAlgo(object):
         other_parents = []
         for i in range(N):
             r = random.uniform(0, S)
-            print(r)
+            # print(r)
             s = 0
             # while s < r:
             for chromosome in self.population:
@@ -126,7 +127,23 @@ class genAlgo(object):
                     break     
         return elitism_parents, other_parents
 
-    def mutate(self, chromosome):
+    def mutate(self, chromosome: dict):
+        for i in range(len(chromosome)):
+            r_1 = random.random()
+            # print(r_1)
+            if r_1 < self.mutation_rate:
+                for i in range(self.num_changes):
+                    r_2 = random.random()
+                    if r_2 < self.tau:
+                        # move random node from cluster_i (chosen randomly) to some cluster_j (also chosen randomly i think)
+                        switch_node = list(chromosome)[random.randrange(0, len(chromosome))]
+                        # self.population[chromosome][]
+                    else: 
+                        # add adjacent nodes of chosen node to cluster_i (randomly chosen, same as above)
+                        pass 
+
+
+    def create_offspring(self):
         pass 
 
     def run(self):
@@ -145,11 +162,12 @@ def cumsum(pop: dict) -> dict:
     return cum_pop
 
     
-ga_instance = genAlgo(sample, 50, 10, 5, 5, 10, 3, 0.1)
+ga_instance = genAlgo(sample, 50, 5, 5, 5, 5, 0.1, 0.4, 3, 0.2)
 # print(ga_instance.population)
-ga_instance.select_parent()
-
-# x = {1:3, 2:12, 3:9, 4:4, 5:10}
+parent1, parent2 = ga_instance.select_parent()
+# print(len(parent1))
+ga_instance.mutate(list(parent1.keys())[0])
+#  x = {1:3, 2:12, 3:9, 4:4, 5:10}
 
 # x_sort = dict(sorted(x.items(), key=lambda item: item[1]))
 # print(x_sort)
