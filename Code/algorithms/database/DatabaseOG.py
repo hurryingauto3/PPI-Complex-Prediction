@@ -193,6 +193,15 @@ class Database:
                 "Gene B" : {"$in" : protein},
             }))
             
+    def check_interaction(self, proteinA, proteinB):
+        ls = list(self.interactions.find({'$and': [
+                {"Gene A": proteinA},
+                {"Gene B": proteinB}
+            ]})) + list(self.interactions.find({'$and': [
+                {"Gene A": proteinB},
+                {"Gene B": proteinA}
+            ]}))
+        return len(ls) > 0
     def get_interactions_by_type(self, type='Primary'):
         return list(self.interactions.find({"Type of data": type}))
 
