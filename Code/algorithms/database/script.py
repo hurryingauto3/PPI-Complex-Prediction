@@ -45,7 +45,7 @@ def get_num_variations(protein):
 
     if not r.ok:
         # r.raise_for_status()
-        sys.exit()
+        return 1
     responseBody = r.json()
     return len(responseBody)
    
