@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 
+
 class Data:
     def __init__(self) -> None:
 
@@ -34,7 +35,7 @@ class Data:
             "NumNeightbors": "",
             "UniquePep": "",
             "VarCount": "",
-            "ProtAffinity": ""   
+            "ProtAffinity": ""
         }
 
         self.taxon_data = {
@@ -103,7 +104,8 @@ class Data:
 class Database:
 
     def __init__(self) -> None:
-        self.clientDB = pymongo.MongoClient("mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
+        self.clientDB = pymongo.MongoClient(
+            "mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
         self.ppiDB = self.clientDB["PPIdb"]
         self.interactions = self.ppiDB["interactions"]
         self.proteins = self.ppiDB["proteins"]
@@ -113,7 +115,6 @@ class Database:
         print("Database connection initialiazed")
 
     # DB editors
-
     def insert_interaction(self, interaction, primary=True, geneA="", geneB="", score=""):
         """Inserts an interaction object into the database"""
         if primary:
@@ -171,37 +172,44 @@ class Database:
             if protein == i:
                 self.proteins.delete_one(i)
 
+    def remove_everything(self):
+        self.remove_all_expdet()
+        self.remove_all_interactions()
+        self.remove_all_interactions(False)
+        self.remove_all_proteins()
+        self.remove_all_taxons()
+
     def get_interactions(self, primary=True):
         if primary:
             return self.interactions.find()
 
     # DB getters
-
     def get_proteins(self):
         return self.proteins.find()
 
     def get_interactions_by_protein(self, protein):
-        if isinstance(protein, str): 
+        if isinstance(protein, str):
             return list(self.interactions.find({'$or': [
                 {"Gene A": protein},
                 {"Gene B": protein}
             ]}))
         else:
             return list(self.interactions.find({
-                "Gene A" : {"$in" : protein},
+                "Gene A": {"$in": protein},
             })) + list(self.interactions.find({
-                "Gene B" : {"$in" : protein},
+                "Gene B": {"$in": protein},
             }))
-            
-    def check_interaction(self, proteinA, proteinB):
+
+    def is_interaction_exist(self, proteinA, proteinB):
         ls = list(self.interactions.find({'$and': [
-                {"Gene A": proteinA},
-                {"Gene B": proteinB}
-            ]})) + list(self.interactions.find({'$and': [
-                {"Gene A": proteinB},
-                {"Gene B": proteinA}
-            ]}))
+            {"Gene A": proteinA},
+            {"Gene B": proteinB}
+        ]})) + list(self.interactions.find({'$and': [
+            {"Gene A": proteinB},
+            {"Gene B": proteinA}
+        ]}))
         return len(ls) > 0
+
     def get_interactions_by_type(self, type='Primary'):
         return list(self.interactions.find({"Type of data": type}))
 
@@ -215,7 +223,7 @@ class Database:
         taxon_id = self.taxonomy.find_one(
             {"Species Name": species_name})["Taxon ID"]
         prim_proteins = self.proteins.find({"Taxon ID": taxon_id})
-        
+
         interactions = []
         for protein in prim_proteins:
             # print('Protein Gene Name:', protein['Gene'])
@@ -229,13 +237,6 @@ class Database:
         else:
             return self.proteins.find(limit=limit)
 
-    def remove_everything(self):
-        self.remove_all_expdet()
-        self.remove_all_interactions()
-        self.remove_all_interactions(False)
-        self.remove_all_proteins()
-        self.remove_all_taxons()
-
     def get_stats(self):
         print("Number of primary interactions: " +
               str(self.interactions.count_documents({})))
@@ -243,29 +244,104 @@ class Database:
         print("Number of taxons: " + str(self.taxonomy.count_documents({})))
         print("Number of exp details: " +
               str(self.expdetails.count_documents({})))
-    
+
     def get_graph(self, interactions):
         G = nx.Graph()
         for i in interactions:
-            G.add_edge(i['Gene A'], i['Gene B'], weight = i['MINT Score'])
+            G.add_edge(i['Gene A'], i['Gene B'], weight=i['MINT Score'])
         return G
-    
+
     def get_adj_matrix(self, interactions):
         G = self.get_graph(interactions)
         return nx.to_numpy_matrix(G), G.nodes()
-    
+
     def get_complete_network(self, query):
         proteins = {}
         for inter in query:
             proteins[inter['Gene A']] = None
             proteins[inter['Gene B']] = None
         return self.get_interactions_by_protein(list(proteins.keys()))
-    
-    def get_prot_features(self, prot):
-        pass
 
-    def get_edge_features(self, edge):
-        pass
+    def get_prot_features(self, prot):
+        return self.get_affinity(prot), self.get_num_variations(prot), self.get_sequence_length(prot), self.get_loc_clustCof(prot)
+
+    def get_affinity(self, protein, cutoff=1000):
+        """
+        Get the affinity for a protein.
+        """
+        requestURL = "http://www.bindingdb.org/axis2/services/BDBService/getLigandsByUniprots?uniprot={0}&cutoff={1}&code=0&response=application/json".format(
+            protein, cutoff)
+        response = requests.get(requestURL)
+        if not response.ok:
+            return 0
+
+        responseBody = response.json()
+        affinity = 0
+        responseBody = responseBody["getLigandsByUniprotsResponse"]["affinities"]
+        print(responseBody)
+
+        # affinity = sum(float(q['affinity']) for q in responseBody)
+
+        affinity = 0
+        count = 0
+        for i in responseBody:
+            try:
+                affinity += i["affinity"]
+                count += 1
+            except TypeError:
+                pass
+        return round(affinity/count, 2)
+
+    def get_num_variations(self, protein):
+        """
+        Get the number of variations for a protein.
+        """
+        requestURL = "https://www.ebi.ac.uk/proteins/api/features?offset=0&size=100&gene={0}&categories=VARIANTS".format(
+            protein)
+
+        r = requests.get(requestURL, headers={"Accept": "application/json"})
+
+        if not r.ok:
+            # r.raise_for_status()
+            return 1
+        responseBody = r.json()
+        return len(responseBody)
+
+    def get_loc_clustCof(self, protein):
+
+        nodes = self.get_interactions_by_protein(protein)
+        nodes = [nodes[0] for n in nodes if nodes[0] != protein else nodes[1]]
+
+        numNodes = len(nodes)
+        numNeigborEdges = 0
+
+        for i in nodes:
+            for j in nodes:
+                if i == j:
+                    continue
+                if self.is_interaction_exist(i, j) == True:
+                    numNeigborEdges += 1
+
+        return 2*numNeigborEdges/numNodes*(numNodes-1)
+
+    def get_sequence_length(self, protein):
+        """
+        Get the avg sequence length for a protein.
+        """
+        requestURL = "https://www.ebi.ac.uk/proteins/api/features?offset=0&size=100&gene={0}&categories=TOPOLOGY".format(
+            protein)
+        r = requests.get(requestURL, headers={"Accept": "application/json"})
+
+        if not r.ok:
+            # r.raise_for_status()
+            return 1
+        responseBody = r.json()
+        seq_len = 0
+        count = 0
+        for i in responseBody:
+            seq += len(i["sequence"])
+        return round(seq_len/count, 2)
+
 
 def get_species_name(species):
     Entrez.email = 'prions.kaavish@gmail.com'  # Put your email here
@@ -273,6 +349,7 @@ def get_species_name(species):
     response = Entrez.read(handle)
     taxonName = response[0].get('ScientificName')
     return taxonName
+
 
 def get_uniprot_id(gene):
     url = 'https://www.uniprot.org/uploadlists/'
@@ -345,6 +422,7 @@ def add_biogrid_data(file_name, db):
             # print("\n\n")
         n += 1
 
+
 def add_mint_data(file_name, db):
     file = open(file_name, 'r')
     file.readline()
@@ -382,6 +460,7 @@ def add_mint_data(file_name, db):
             # print("added interaction :", data.get_inters())
             print("\n\n")
         n += 1
+
 
 def add_mentha_data(file_name, db, species):
     file = open(file_name, 'r')
@@ -445,10 +524,9 @@ def add_mentha_data(file_name, db, species):
 #     #     print(prot)
 
 #     # print(PPIDb.get_interactions_by_species("Caenorhabditis elegans"))
-    
+
 #     query = PPIDb.get_interactions_by_species("Saccharomyces cerevisiae")
 #     # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
 #     # print(query)
 #     print(PPIDb.get_graph(query))
 #     print(PPIDb.get_adj_matrix(query))
-    
