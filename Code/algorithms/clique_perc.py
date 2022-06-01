@@ -73,8 +73,7 @@ def Clique_Percolation(adj_matrix, k, I):
         communities.append(common_elements_in_cliques)
 
     print('Time taken for function to run:', time.time() - start)
+    
     return communities
 
-
-# print(Clique_Percolation(sample_adj_matrix, 3, 1))
 

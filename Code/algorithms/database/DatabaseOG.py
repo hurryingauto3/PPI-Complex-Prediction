@@ -2,7 +2,6 @@ import pymongo
 import urllib.parse
 import urllib.request
 import requests
-import Data
 import json
 import time
 from Bio import Entrez
@@ -10,9 +9,9 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 
-
 class Data:
     def __init__(self) -> None:
+
         self.inter_data = {
             "_id": "",
             "Source": "",
@@ -20,10 +19,6 @@ class Data:
             "Gene A": "",  # the official symbol A for protein A
             "Gene B": "",  # the official symbol A for protein B
             "MINT Score": "",  # MINT score for the interaction
-            # primary or secondary data (produced by our algo)
-            "Type of data": "",
-            # predicted score for interaction produced by our algo (is "-" if primary)
-            "Predicted Score": "",
             "Experiment ID": ""  # _id in the experiment table for the interaction
         }
 
@@ -32,7 +27,14 @@ class Data:
             "Gene": "",
             "UniprotKB AC": "",
             "Taxon ID": "",
-            "Description": ""
+            "Description": "",
+            "ProtLen": "",
+            "ProtWeight": "",
+            "ClusterCof": "",
+            "NumNeightbors": "",
+            "UniquePep": "",
+            "VarCount": "",
+            "ProtAffinity": ""   
         }
 
         self.taxon_data = {
@@ -61,23 +63,29 @@ class Data:
     def get_exps(self):
         return self.exp_data
 
-    def set_inters(self, source, db_id, GeneA, GeneB, score, type, pred_score, exp_id):
+    def set_inters(self, source, db_id, GeneA, GeneB, score, type_, exp_id):
         self.inter_data["_id"] = GeneA+"_"+GeneB
         self.inter_data["Source"] = source
         self.inter_data["Database ID"] = db_id
         self.inter_data["Gene A"] = GeneA
         self.inter_data["Gene B"] = GeneB
         self.inter_data["MINT Score"] = score
-        self.inter_data["Type of data"] = type
-        self.inter_data["Predicted Score"] = pred_score
+        self.inter_data["Type of data"] = type_
         self.inter_data["Experiment ID"] = exp_id
 
-    def set_proteins(self, gene, uniprotKB, taxon, desc):
+    def set_proteins(self, gene, uniprotKB, taxon, desc, protlen, protweight, clustercof, numneighbors, uniquepep, varcount, protAf):
         self.protein_data["_id"] = gene
         self.protein_data["Gene"] = gene
         self.protein_data["UniprotKB AC"] = uniprotKB
         self.protein_data["Taxon ID"] = taxon
         self.protein_data["Description"] = desc
+        self.protein_data["ProtLen"] = protlen
+        self.protein_data["ProtWeight"] = protweight
+        self.protein_data["ClusterCof"] = clustercof
+        self.protein_data["NumNeightbors"] = numneighbors
+        self.prorot_data["UniquePep"] = uniquepep
+        self.protein_data["VarCount"] = varcount
+        self.protein_data["ProtAffinity"] = protAf
 
     def set_taxons(self, taxon, species):
         self.taxon_data["_id"] = taxon
@@ -95,21 +103,16 @@ class Data:
 class Database:
 
     def __init__(self) -> None:
-        self.clientDB = pymongo.MongoClient(
-            "mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
-        print("started client")
+        self.clientDB = pymongo.MongoClient("mongodb+srv://user:qwerty321@ppidb.3pazw.mongodb.net/PPIdb?retryWrites=true&w=majority")
         self.ppiDB = self.clientDB["PPIdb"]
-        print("init DB")
         self.interactions = self.ppiDB["interactions"]
-        print("init interactions")
         self.proteins = self.ppiDB["proteins"]
-        print("init proteins")
         self.taxonomy = self.ppiDB["taxonomy"]
-        print("init taxon")
         self.expdetails = self.ppiDB["exp-details"]
-        print("init exp details")
 
-        print("Database connected")
+        print("Database connection initialiazed")
+
+    # DB editors
 
     def insert_interaction(self, interaction, primary=True, geneA="", geneB="", score=""):
         """Inserts an interaction object into the database"""
@@ -172,6 +175,8 @@ class Database:
         if primary:
             return self.interactions.find()
 
+    # DB getters
+
     def get_proteins(self):
         return self.proteins.find()
 
@@ -188,7 +193,6 @@ class Database:
                 "Gene B" : {"$in" : protein},
             }))
             
-
     def get_interactions_by_type(self, type='Primary'):
         return list(self.interactions.find({"Type of data": type}))
 
@@ -205,7 +209,7 @@ class Database:
         
         interactions = []
         for protein in prim_proteins:
-            print('Protein Gene Name:', protein['Gene'])
+            # print('Protein Gene Name:', protein['Gene'])
             interactions += self.get_interactions_by_protein(protein['Gene'])
         return self.get_complete_network(interactions)
 
@@ -247,8 +251,12 @@ class Database:
             proteins[inter['Gene A']] = None
             proteins[inter['Gene B']] = None
         return self.get_interactions_by_protein(list(proteins.keys()))
-        
+    
+    def get_prot_features(self, prot):
+        pass
 
+    def get_edge_features(self, edge):
+        pass
 
 def get_species_name(species):
     Entrez.email = 'prions.kaavish@gmail.com'  # Put your email here
@@ -256,7 +264,6 @@ def get_species_name(species):
     response = Entrez.read(handle)
     taxonName = response[0].get('ScientificName')
     return taxonName
-
 
 def get_uniprot_id(gene):
     url = 'https://www.uniprot.org/uploadlists/'
@@ -308,27 +315,26 @@ def add_biogrid_data(file_name, db):
             temp = line.split("\t")
             data.set_proteins(temp[7], get_uniprot_id(temp[7]), temp[15], "")
             db.insert_protein(data.get_proteins())
-            print("added protein A :", data.get_proteins())
+            # print("added protein A :", data.get_proteins())
             data.set_proteins(temp[8], get_uniprot_id(temp[8]), temp[16], "")
             db.insert_protein(data.get_proteins())
-            print("added protein B :", data.get_proteins())
+            # print("added protein B :", data.get_proteins())
             data.set_taxons(temp[15], temp[35])
             db.insert_taxon(data.get_taxons())
-            print("added taxon A :", data.get_taxons())
+            # print("added taxon A :", data.get_taxons())
             if temp[15] != temp[16]:
                 data.set_taxons(temp[16], temp[36])
                 db.insert_taxon(data.get_taxons())
-                print("added taxon B :", data.get_taxons())
+                # print("added taxon B :", data.get_taxons())
             data.set_exps(temp[11], temp[12], temp[13], temp[14])
             db.insert_expdet(data.get_exps())
-            print("added exp details :", data.get_exps())
+            # print("added exp details :", data.get_exps())
             data.set_inters(temp[22], temp[0], temp[7], temp[8],
                             "", "Primary", "", data.get_exps()["_id"])
             db.insert_interaction(data.get_inters())
-            print("added interaction :", data.get_inters())
-            print("\n\n")
+            # print("added interaction :", data.get_inters())
+            # print("\n\n")
         n += 1
-
 
 def add_mint_data(file_name, db):
     file = open(file_name, 'r')
@@ -341,33 +347,32 @@ def add_mint_data(file_name, db):
             pass
         else:
             data = Data()
-            print(line)
+            # print(line)
             # Protein A;Gene A;Taxon A;Protein B;Gene B;Taxon B;Score;PMID
             temp = line.split(";")
             temp[7] = temp[7].replace(" \n", "")
             data.set_proteins(temp[1], get_uniprot_id(temp[1]), temp[2], "")
             db.insert_protein(data.get_proteins())
-            print("added protein A :", data.get_proteins())
+            # print("added protein A :", data.get_proteins())
             data.set_proteins(temp[4], get_uniprot_id(temp[4]), temp[5], "")
             db.insert_protein(data.get_proteins())
-            print("added protein B :", data.get_proteins())
+            # print("added protein B :", data.get_proteins())
             data.set_taxons(temp[2], get_species_name(int(temp[2])))
             db.insert_taxon(data.get_taxons())
-            print("added taxon A :", data.get_taxons())
+            # print("added taxon A :", data.get_taxons())
             if temp[2] != temp[5]:
                 data.set_taxons(temp[5], get_species_name(int(temp[5])))
                 db.insert_taxon(data.get_taxons())
-                print("added taxon B :", data.get_taxons())
+                # print("added taxon B :", data.get_taxons())
             data.set_exps("", "", "", temp[7])
             db.insert_expdet(data.get_exps())
-            print("added exp details :", data.get_exps())
+            # print("added exp details :", data.get_exps())
             data.set_inters("MINT", "", temp[1], temp[4], float(
                 temp[6]), "Primary", "", data.get_exps()["_id"])
             db.insert_interaction(data.get_inters())
-            print("added interaction :", data.get_inters())
+            # print("added interaction :", data.get_inters())
             print("\n\n")
         n += 1
-
 
 def add_mentha_data(file_name, db, species):
     file = open(file_name, 'r')
@@ -382,59 +387,59 @@ def add_mentha_data(file_name, db, species):
         temp = line.split(";")
         data.set_proteins(temp[1], get_uniprot_id(temp[1]), taxon, "")
         db.insert_protein(data.get_proteins())
-        print("added protein A")
+        # print("added protein A")
         data.set_proteins(temp[3], get_uniprot_id(temp[3]), taxon, "")
         db.insert_protein(data.get_proteins())
-        print("added protein B")
+        # print("added protein B")
         data.set_taxons(taxon, get_species_name(taxon))
         db.insert_taxon(data.get_taxons())
-        print("added taxon A")
+        # print("added taxon A")
         if temp[15] != temp[16]:
             data.set_taxons(taxon, get_species_name(taxon))
             db.insert_taxon(data.get_taxons())
-            print("added taxon B")
+            # print("added taxon B")
         data.set_exps("", "", "", "")
         db.insert_expdet(data.get_exps())
-        print("added exp details")
+        # print("added exp details")
         data.set_inters("Mentha", "", temp[1], temp[3], float(
             temp[5]), "Primary", "", data.get_exps()["_id"])
         db.insert_interaction(data.get_inters())
-        print("added interaction")
-        print("\n\n")
+        # print("added interaction")
+        # print("\n\n")
         n += 1
         if n == 6:
             break
 
 
-if __name__ == "__main__":
-    start = time.time()
-    Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
-    MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
-    Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
-    PPIDb = Database()
-    print("init database")
+# if __name__ == "__main__":
+#     start = time.time()
+#     Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
+#     MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
+#     Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
+#     PPIDb = Database()
+#     print("init database")
 
-    # add_biogrid_data(Biogrid_db_addr, PPIDb)
-    # add_mint_data(MINT_db_addr, PPIDb)
-    # add_mentha_data(Mentha_db_addr, PPIDb)
+#     # add_biogrid_data(Biogrid_db_addr, PPIDb)
+#     # add_mint_data(MINT_db_addr, PPIDb)
+#     # add_mentha_data(Mentha_db_addr, PPIDb)
 
-    # PPIDb.remove_all_expdet()
-    # PPIDb.remove_all_interactions()
-    # PPIDb.remove_all_interactions(False)
-    # PPIDb.remove_everything()
-    # print("removed everything")
+#     # PPIDb.remove_all_expdet()
+#     # PPIDb.remove_all_interactions()
+#     # PPIDb.remove_all_interactions(False)
+#     # PPIDb.remove_everything()
+#     # print("removed everything")
 
-    PPIDb.get_stats()
-    print("got stats")
+#     PPIDb.get_stats()
+#     print("got stats")
 
-    # for prot in PPIDb.get_all_prots(5):
-    #     print(prot)
+#     # for prot in PPIDb.get_all_prots(5):
+#     #     print(prot)
 
-    # print(PPIDb.get_interactions_by_species("Caenorhabditis elegans"))
+#     # print(PPIDb.get_interactions_by_species("Caenorhabditis elegans"))
     
-    query = PPIDb.get_interactions_by_species("Saccharomyces cerevisiae")
-    # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
-    # print(query)
-    print(PPIDb.get_graph(query))
-    print(PPIDb.get_adj_matrix(query))
+#     query = PPIDb.get_interactions_by_species("Saccharomyces cerevisiae")
+#     # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
+#     # print(query)
+#     print(PPIDb.get_graph(query))
+#     print(PPIDb.get_adj_matrix(query))
     
