@@ -45,6 +45,23 @@ def get_num_variations(protein):
     responseBody = r.json()
     return len(responseBody)
    
+def get_loc_clustCof(db: Database, protein):
+
+    nodes = db.get_interactions_by_protein(protein)
+    nodes = [nodes[0] for n in nodes if nodes[0] != protein else nodes[1]]
+    
+    numNodes = len(nodes)
+    numNeigborEdges = 0
+
+    for i in nodes:
+        for j in nodes: 
+            if i == j:
+                continue
+            if db.is_interaction_exist((i,j)) == True:
+                numNeigborEdges += 1
+
+    return 2*numNeigborEdges/numNodes*(numNodes-1)
+
 if __name__ == "__main__":
     PPIDb = Database()
     n = 0
