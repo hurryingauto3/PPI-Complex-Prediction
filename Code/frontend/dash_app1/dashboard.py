@@ -88,6 +88,10 @@ def create_dashboard(server, PPIDb):
         external_stylesheets=[dbc.themes.BOOTSTRAP]
     )
 
+    species = [specie['Species Name'] for specie in list(PPIDb.get_all_taxons(5))]
+    species.insert(0, 'All')
+    db = ['All', 'BioGrid', 'Mentha', 'MINT']
+    
     Human_graph = {
         1 : {2 : {'weight': 6}, 3 : {'weight': 2}, 4 : {'weight': 8}},
         2 : {1 : {'weight': 6}},
@@ -111,8 +115,8 @@ def create_dashboard(server, PPIDb):
         6 : {5 : {'weight': 3}}
     }
     
-    species = ['Human', 'All']
-    db = ['Biogrid', 'All']
+    # species = ['Human', 'All']
+    # db = ['Biogrid', 'All']
     
     controls = dbc.Card(
         [
@@ -170,7 +174,7 @@ def create_dashboard(server, PPIDb):
     def update_output(specie, db):
         if specie == 'All' or db == 'All':
             G = nx.Graph(All_graph)
-        elif specie == 'Human':
+        elif specie == 'Homo sapiens':
             G = nx.Graph(Human_graph)
         else:
             G = nx.Graph(Biogrid_graph)

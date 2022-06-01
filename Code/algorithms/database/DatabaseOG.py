@@ -2,12 +2,13 @@ import pymongo
 import urllib.parse
 import urllib.request
 import requests
-import json
 import time
 from Bio import Entrez
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
+import json
+from matplotlib.font_manager import json_load
 
 
 class Data:
@@ -111,10 +112,14 @@ class Database:
         self.proteins = self.ppiDB["proteins"]
         self.taxonomy = self.ppiDB["taxonomy"]
         self.expdetails = self.ppiDB["exp-details"]
+        self.clusters = self.ppiDB["cluster"]
 
         print("Database connection initialiazed")
 
     # DB editors
+    def insert_clusters(self, cluster_json):
+        self.clusters.insert_many(cluster_json)
+    
     def insert_interaction(self, interaction, primary=True, geneA="", geneB="", score=""):
         """Inserts an interaction object into the database"""
         if primary:
@@ -512,14 +517,19 @@ def add_mentha_data(file_name, db, species):
             break
 
 
-# if __name__ == "__main__":
-#     start = time.time()
-#     Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
-#     MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
-#     Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
-#     PPIDb = Database()
-#     print("init database")
-
+if __name__ == "__main__":
+    start = time.time()
+    Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
+    MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
+    Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
+    complex_addr = './allComplexes.json'
+    PPIDb = Database()
+    print("init database")
+    
+    complexes = json_load(complex_addr)
+    PPIDb.insert_clusters(complexes)
+    print('Done')
+    # print(list(PPIDb.get_all_taxons(5)))
 #     # add_biogrid_data(Biogrid_db_addr, PPIDb)
 #     # add_mint_data(MINT_db_addr, PPIDb)
 #     # add_mentha_data(Mentha_db_addr, PPIDb)
