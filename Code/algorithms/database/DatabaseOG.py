@@ -119,6 +119,9 @@ class Database:
     # DB editors
     def insert_clusters(self, cluster_json):
         self.clusters.insert_many(cluster_json)
+        
+    def remove_all_clusters(self):
+        self.clusters.delete_many({})
     
     def insert_interaction(self, interaction, primary=True, geneA="", geneB="", score=""):
         """Inserts an interaction object into the database"""

@@ -31,8 +31,8 @@ if __name__ == "__main__":
     protein_test = 'P45985'
     # # protein2 = 'RABGEF1'
     # protein3 = 'Q9UJ41'
-    print(get_affinity(protein_test))
-    print(get_loc_clustCof(protein_test))
+    # print(get_affinity(protein_test))
+    # print(get_loc_clustCof(protein_test))
     # time.sleep(1)
     # # print(get_affinity(protein2))
     # # time.sleep(1)
