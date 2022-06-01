@@ -236,6 +236,12 @@ class Database:
             return self.proteins.find()
         else:
             return self.proteins.find(limit=limit)
+        
+    def get_all_taxons(self, limit = -1):
+        if limit == -1:
+            return self.taxonomy.find()
+        else:
+            return self.taxonomy.find(limit=limit)
 
     def get_stats(self):
         print("Number of primary interactions: " +
@@ -310,8 +316,15 @@ class Database:
     def get_loc_clustCof(self, protein):
 
         nodes = self.get_interactions_by_protein(protein)
-        nodes = [nodes[0] for n in nodes if nodes[0] != protein else nodes[1]]
-
+        nodelist = []
+        # nodelist = [nodes[0] for n in nodes if nodes[0] != protein else nodes[1]]
+        
+        for n in nodes:
+            if nodes[0] != protein:
+                nodelist.append(nodes[0])
+            else:
+                nodelist.append(nodes[1])
+        nodes = nodelist
         numNodes = len(nodes)
         numNeigborEdges = 0
 

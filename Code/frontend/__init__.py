@@ -4,7 +4,7 @@ from flask_navigation import Navigation
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 
-def init_app():
+def init_app(PPIDb):
     app = Flask(__name__)
     app.config['DEBUG'] = True
     nav = Navigation(app)
@@ -22,6 +22,6 @@ def init_app():
         from . import routes
         # Import Dash application
         from .dash_app1.dashboard import create_dashboard
-        app = create_dashboard(app)
+        app = create_dashboard(app, PPIDb)
         
         return app

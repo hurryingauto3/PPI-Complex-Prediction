@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import networkx as nx
 import dash_bootstrap_components as dbc
 
+
 def networkGraph(G):
     # edges = [[EGDE_VAR, 'B'], ['B', 'C'], ['B', 'D']]
     # G = nx.Graph(graph)
@@ -79,7 +80,7 @@ def networkGraph(G):
     fig = go.Figure(data=[edge_trace, node_trace, eweights_trace], layout=layout)
     return fig
 
-def create_dashboard(server):
+def create_dashboard(server, PPIDb):
     """Create a Plotly Dash dashboard."""
     app = dash.Dash(
         server=server,
