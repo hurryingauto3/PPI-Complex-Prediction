@@ -49,6 +49,25 @@ def get_num_variations(protein):
     responseBody = r.json()
     return len(responseBody)
    
+def get_sequence_length(protein):
+    """
+    Get the avg sequence length for a protein.
+    """
+    requestURL = "https://www.ebi.ac.uk/proteins/api/features?offset=0&size=100&gene={0}&categories=TOPOLOGY".format(protein)
+    r = requests.get(requestURL, headers={ "Accept" : "application/json"})
+
+    if not r.ok:
+        # r.raise_for_status()
+        return 1
+    responseBody = r.json()
+    seq_len = 0
+    count = 0
+    for i in responseBody:
+        seq += len(i["sequence"])
+    return round(seq_len/count, 2)
+
+
+    
 if __name__ == "__main__":
     # PPIDb = Database()
     # n = 0
