@@ -2,12 +2,13 @@ import pymongo
 import urllib.parse
 import urllib.request
 import requests
-import json
 import time
 from Bio import Entrez
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
+import json
+from matplotlib.font_manager import json_load
 
 
 class Data:
@@ -111,10 +112,17 @@ class Database:
         self.proteins = self.ppiDB["proteins"]
         self.taxonomy = self.ppiDB["taxonomy"]
         self.expdetails = self.ppiDB["exp-details"]
+        self.clusters = self.ppiDB["cluster"]
 
         print("Database connection initialiazed")
 
     # DB editors
+    def insert_clusters(self, cluster_json):
+        self.clusters.insert_many(cluster_json)
+        
+    def remove_all_clusters(self):
+        self.clusters.delete_many({})
+    
     def insert_interaction(self, interaction, primary=True, geneA="", geneB="", score=""):
         """Inserts an interaction object into the database"""
         if primary:
@@ -236,6 +244,12 @@ class Database:
             return self.proteins.find()
         else:
             return self.proteins.find(limit=limit)
+        
+    def get_all_taxons(self, limit = -1):
+        if limit == -1:
+            return self.taxonomy.find()
+        else:
+            return self.taxonomy.find(limit=limit)
 
     def get_stats(self):
         print("Number of primary interactions: " +
@@ -310,8 +324,15 @@ class Database:
     def get_loc_clustCof(self, protein):
 
         nodes = self.get_interactions_by_protein(protein)
-        nodes = [nodes[0] for n in nodes if nodes[0] != protein else nodes[1]]
-
+        nodelist = []
+        # nodelist = [nodes[0] for n in nodes if nodes[0] != protein else nodes[1]]
+        
+        for n in nodes:
+            if nodes[0] != protein:
+                nodelist.append(nodes[0])
+            else:
+                nodelist.append(nodes[1])
+        nodes = nodelist
         numNodes = len(nodes)
         numNeigborEdges = 0
 
@@ -499,14 +520,19 @@ def add_mentha_data(file_name, db, species):
             break
 
 
-# if __name__ == "__main__":
-#     start = time.time()
-#     Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
-#     MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
-#     Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
-#     PPIDb = Database()
-#     print("init database")
-
+if __name__ == "__main__":
+    start = time.time()
+    Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
+    MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
+    Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
+    complex_addr = './allComplexes.json'
+    PPIDb = Database()
+    print("init database")
+    
+    complexes = json_load(complex_addr)
+    PPIDb.insert_clusters(complexes)
+    print('Done')
+    # print(list(PPIDb.get_all_taxons(5)))
 #     # add_biogrid_data(Biogrid_db_addr, PPIDb)
 #     # add_mint_data(MINT_db_addr, PPIDb)
 #     # add_mentha_data(Mentha_db_addr, PPIDb)
