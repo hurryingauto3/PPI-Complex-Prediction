@@ -53,7 +53,6 @@ def normalized_cut_2d(edge_index, pos):
     row, col = edge_index
     edge_attr = torch.norm(pos[row] - pos[col], p=2, dim=1)
     return normalized_cut(edge_index, edge_attr, num_nodes=pos.size(0))
-
 #Study
 class MPNN(torch.nn.Module):
     def __init__(self):
@@ -85,8 +84,8 @@ class MPNN(torch.nn.Module):
         x = F.elu(self.fc1(x))
         x = F.dropout(x, training=self.training)
         return F.log_softmax(self.fc2(x), dim=1)
-
 #Study
+# Neural net to generalize   convolution on graphs
 class GCN(torch.nn.Module):
     def __init__(self):
         super().__init__()
@@ -102,7 +101,6 @@ class GCN(torch.nn.Module):
         x = self.conv2(x, edge_index)
 
         return F.log_softmax(x, dim=1)
-
 #Study
 class GAT(torch.nn.Module):
     def __init__(self, in_channels, out_channels):
@@ -123,16 +121,16 @@ class GAT(torch.nn.Module):
 model = GCN().to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
 
-# model.train()
-# for epoch in range(200):
-#     optimizer.zero_grad()
-#     out = model(data)
-#     loss = F.nll_loss(out[data.train_mask], data.y[data.train_mask])
-#     loss.backward()
-#     optimizer.step()
+model.train()
+for epoch in range(200):
+    optimizer.zero_grad()
+    out = model(data)
+    loss = F.nll_loss(out[data.train_mask], data.y[data.train_mask])
+    loss.backward()
+    optimizer.step()
 
-# model.eval()
-# pred = model(data).argmax(dim=1)
-# correct = (pred[data.test_mask] == data.y[data.test_mask]).sum()
-# acc = int(correct) / int(data.test_mask.sum())
-# print(f'Accuracy: {acc:.4f}')
+model.eval()
+pred = model(data).argmax(dim=1)
+correct = (pred[data.test_mask] == data.y[data.test_mask]).sum()
+acc = int(correct) / int(data.test_mask.sum())
+print(f'Accuracy: {acc:.4f}')

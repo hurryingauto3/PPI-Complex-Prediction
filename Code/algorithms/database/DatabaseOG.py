@@ -11,6 +11,7 @@ import numpy as np
 
 class Data:
     def __init__(self) -> None:
+
         self.inter_data = {
             "_id": "",
             "Source": "",
@@ -18,9 +19,6 @@ class Data:
             "Gene A": "",  # the official symbol A for protein A
             "Gene B": "",  # the official symbol A for protein B
             "MINT Score": "",  # MINT score for the interaction
-            # primary or secondary data (produced by our algo)
-            "Type of data": "",
-            # predicted score for interaction produced by our algo (is "-" if primary)
             "Experiment ID": ""  # _id in the experiment table for the interaction
         }
 
@@ -65,14 +63,14 @@ class Data:
     def get_exps(self):
         return self.exp_data
 
-    def set_inters(self, source, db_id, GeneA, GeneB, score, type, exp_id):
+    def set_inters(self, source, db_id, GeneA, GeneB, score, type_, exp_id):
         self.inter_data["_id"] = GeneA+"_"+GeneB
         self.inter_data["Source"] = source
         self.inter_data["Database ID"] = db_id
         self.inter_data["Gene A"] = GeneA
         self.inter_data["Gene B"] = GeneB
         self.inter_data["MINT Score"] = score
-        self.inter_data["Type of data"] = type
+        self.inter_data["Type of data"] = type_
         self.inter_data["Experiment ID"] = exp_id
 
     def set_proteins(self, gene, uniprotKB, taxon, desc, protlen, protweight, clustercof, numneighbors, uniquepep, varcount, protAf):
@@ -262,14 +260,12 @@ class Database:
     def get_edge_features(self, edge):
         pass
 
-
 def get_species_name(species):
     Entrez.email = 'prions.kaavish@gmail.com'  # Put your email here
     handle = Entrez.efetch('taxonomy', id=species, rettype='xml')
     response = Entrez.read(handle)
     taxonName = response[0].get('ScientificName')
     return taxonName
-
 
 def get_uniprot_id(gene):
     url = 'https://www.uniprot.org/uploadlists/'
@@ -342,7 +338,6 @@ def add_biogrid_data(file_name, db):
             print("\n\n")
         n += 1
 
-
 def add_mint_data(file_name, db):
     file = open(file_name, 'r')
     file.readline()
@@ -380,7 +375,6 @@ def add_mint_data(file_name, db):
             print("added interaction :", data.get_inters())
             print("\n\n")
         n += 1
-
 
 def add_mentha_data(file_name, db, species):
     file = open(file_name, 'r')
