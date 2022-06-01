@@ -19,7 +19,11 @@ def get_affinity(protein, cutoff = 1000):
         return 0
     
     responseBody = response.json()
+    affinity = 0
     responseBody = responseBody["getLigandsByUniprotsResponse"]["affinities"]
+    print(responseBody)
+    
+    # affinity = sum(float(q['affinity']) for q in responseBody)
     
     affinity = 0
     count = 0
@@ -46,25 +50,26 @@ def get_num_variations(protein):
     return len(responseBody)
    
 if __name__ == "__main__":
-    PPIDb = Database()
-    n = 0
-    for protein in PPIDb.get_proteins():
-        gene = protein['UniprotKB AC']
-        try:
-            print(get_affinity(gene))
-        except HTTPError:
-            print("Error with", gene)
-        n += 1
-        if n == 11:
-            break
+    # PPIDb = Database()
+    # n = 0
+    # for protein in PPIDb.get_proteins():
+    #     gene = protein['UniprotKB AC']
+    #     try:
+    #         print(get_affinity(gene))
+    #     except HTTPError:
+    #         print("Error with", gene)
+    #     n += 1
+    #     if n == 11:
+    #         break
         # print(protein)
         # PPIDb.update_affinity(protein, get_affinity(protein))
         # PPIDb.update_num_variations(protein, get_num_variations(protein))
         # time.sleep(1)
     # protein = 'P35355'
+    protein_test = 'P45985'
     # # protein2 = 'RABGEF1'
     # protein3 = 'Q9UJ41'
-    # print(get_affinity(protein))
+    print(get_affinity(protein_test))
     # time.sleep(1)
     # # print(get_affinity(protein2))
     # # time.sleep(1)
