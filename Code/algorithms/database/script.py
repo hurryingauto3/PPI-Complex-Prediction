@@ -1,3 +1,4 @@
+from itertools import count
 from urllib.error import HTTPError
 from DatabaseOG import Database, Data
 import urllib.parse
@@ -14,16 +15,21 @@ def get_affinity(protein, cutoff = 1000):
     """
     requestURL = "http://www.bindingdb.org/axis2/services/BDBService/getLigandsByUniprots?uniprot={0}&cutoff={1}&code=0&response=application/json".format(protein, cutoff)
     response = requests.get(requestURL)
-    
     if not response.ok:
-        response.raise_for_status()
-        sys.exit()
+        return 0
     
     responseBody = response.json()
     responseBody = responseBody["getLigandsByUniprotsResponse"]["affinities"]
-    affinity = sum(float(q['affinity']) for q in responseBody)
     
-    return affinity
+    affinity = 0
+    count = 0
+    for i in responseBody:
+        try:
+            affinity += i["affinity"]
+            count += 1
+        except TypeError:
+            pass
+    return round(affinity/count, 2)
 
 def get_num_variations(protein):
     """
