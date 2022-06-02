@@ -164,7 +164,7 @@ def add_mint_data_from_file(file_name, db):
     not_done = [210, 632, 882]
     for taxon in taxon_list['_id']:
         print('taxon =', taxon)
-        if taxon > 632:
+        if taxon > 882:
             proteinA = df[df['Taxon A'] == taxon].iloc[:, :3]
             proteinA = proteinA[['Gene A', 'Protein A', 'Taxon A']]
             proteinA.rename(columns = {'Protein A':'UniprotKB AC', 'Gene A':'_id', 'Taxon A':'Taxon ID'}, inplace = True)
