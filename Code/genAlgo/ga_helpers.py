@@ -1,5 +1,4 @@
-# TODO: - write createoffspring function 
-#       - main run function
+# TODO: - fix bug in mutate 
 #       - integrate actual data
 
 
@@ -35,7 +34,7 @@ class genAlgo(object):
         self.mutation_rate = mutation_rate
         self.num_changes = num_changes
         self.tau = tau
-        self.initialize_pop()
+        # self.initialize_pop()
 
     
     def generate_chromosome(self) -> tuple:
@@ -68,7 +67,8 @@ class genAlgo(object):
             # print(idx)
             cluster_nodes.append(nodes[idx])
         return cluster_nodes
-        
+
+
     def nodes2indices(self, cluster: list) -> list:
         nodes = list(self.ppin_graph.nodes)
         cluster_idx = []
@@ -76,7 +76,6 @@ class genAlgo(object):
             cluster_idx.append(nodes.index(node))
         return cluster_idx
 
-    
     
     def compute_w_ik(self, cluster_nodes: list) -> int:
         w_ik = 0
@@ -149,6 +148,7 @@ class genAlgo(object):
         return chromosome
 
 
+# debug this to remove repeating nodes
     def mutate_util(self, chromosome: tuple, i: int, k: int):
         chromosome = self.chrom2list(chromosome)
         rand = random.randrange(0, len(chromosome))
@@ -167,7 +167,8 @@ class genAlgo(object):
         adjacents = [adjacents[i] for i in range(len(adjacents)) if adjacents[i] not in cluster]
         chromosome[i].extend(adjacents)
         chromosome = self.chromlist2tup(chromosome)
-        print(chromosome)
+        # print(chromosome)
+        return chromosome
 
 
     def mutate(self, chromosome: dict):
@@ -177,6 +178,7 @@ class genAlgo(object):
             if r_1 < self.mutation_rate:
                 for _ in range(self.num_changes):
                     r_2 = random.random()
+                    # print(chromosome)
                     k = random.randrange(0, len(chromosome[i])) 
                     if r_2 < self.tau:
                         chromosome = self.mutate_util(chromosome, i, k)
@@ -185,11 +187,32 @@ class genAlgo(object):
         return chromosome
 
 
-    def create_offspring(self):
-        pass 
+    def create_offspring(self) -> dict:
+        elitism_parents, other_parents = self.select_parent()
+        offspring = []
+        for parent in other_parents:
+            offspring.append(self.mutate(parent))
+        offspring.extend(elitism_parents)
+        new_pop = {}
+        for child in offspring:
+            new_pop[child] = 0
+        return new_pop 
 
     def run(self):
-        pass
+        best_chromosomes = []
+        for iter in range(self.num_iters):
+            # initialize_pop
+            self.initialize_pop()
+            gen = 0
+            while gen <= self.num_gens:
+                self.population = self.create_offspring()
+                self.eval_fitness_all()
+                gen += 1
+            best_c = max(self.population, key= lambda key: self.population[key])
+            best_chromosomes.append((best_c, self.eval_fitness(best_c)))
+        # choose single best clustering from best chromosomes
+        final_clustering = max(best_chromosomes, key = lambda key: best_chromosomes[1])
+        return final_clustering
 
 
 def cumsum(pop: dict) -> dict:
@@ -204,8 +227,10 @@ def cumsum(pop: dict) -> dict:
     return cum_pop
 
     
-ga_instance = genAlgo(sample, 50, 5, 5, 5, 5, 0.1, 0.4, 3, 0.2)
+ga_instance = genAlgo(sample, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2)
+ga_instance.run()
 # print(ga_instance.population)
-parent1, parent2 = ga_instance.select_parent()
+# parent1, parent2 = ga_instance.select_parent()
 # print(len(parent1))
-ga_instance.mutate(list(parent1.keys())[0])
+# ga_instance.mutate(list(parent1.keys())[0])
+# print(ga_instance.create_offspring())
