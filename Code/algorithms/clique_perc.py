@@ -43,13 +43,11 @@ def find_intensity(clique, G, k):
 def Clique_Percolation(G, k, I):
     start = time.time()
     cliques = [clique for clique in nx.enumerate_all_cliques(
-        G) if len(clique) == k]
+        G) if (len(clique) == k and find_intensity(clique, G, k) >= I)]
 
     clique_map = {}
     for i in range(len(cliques)):
-        print(cliques[i])
-        if find_intensity(cliques[i], G, k) > I:
-            clique_map[i+1] = cliques[i]
+        clique_map[i+1] = cliques[i]
     perculated_graph = nx.Graph()
     perculated_graph.add_nodes_from(clique_map.keys())
 
