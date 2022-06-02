@@ -20,8 +20,11 @@ def init_app(PPIDb):
         nav.init_app(app)
         # Import parts of our core Flask app
         from . import routes
-        # Import Dash application
+        # Import Dash application for protein networks
         from .dash_app1.dashboard import create_dashboard
         app = create_dashboard(app, PPIDb)
+        
+        from .dash_app2.dashboard2 import create_dashboard2
+        app = create_dashboard2(app, PPIDb)
         
         return app

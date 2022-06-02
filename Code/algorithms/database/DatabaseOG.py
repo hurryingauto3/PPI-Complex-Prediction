@@ -9,6 +9,7 @@ import networkx as nx
 import numpy as np
 import json
 from matplotlib.font_manager import json_load
+from pyvis.network import Network
 
 
 class Data:
@@ -41,7 +42,6 @@ class Data:
 
         self.taxon_data = {
             "_id": "",
-            "Taxon ID": "",
             "Species Name": ""
         }
 
@@ -65,41 +65,33 @@ class Data:
     def get_exps(self):
         return self.exp_data
 
-    def set_inters(self, source, db_id, GeneA, GeneB, score, type_, exp_id):
+    def set_inters(self, source, GeneA, GeneB, score, type_, exp_id):
         self.inter_data["_id"] = GeneA+"_"+GeneB
         self.inter_data["Source"] = source
-        self.inter_data["Database ID"] = db_id
         self.inter_data["Gene A"] = GeneA
         self.inter_data["Gene B"] = GeneB
         self.inter_data["MINT Score"] = score
         self.inter_data["Type of data"] = type_
         self.inter_data["Experiment ID"] = exp_id
 
-    def set_proteins(self, gene, uniprotKB, taxon, desc, protlen, protweight, clustercof, numneighbors, uniquepep, varcount, protAf):
+    def set_proteins(self, gene, uniprotKB, taxon, protlen, protweight, clustercof, numneighbors, uniquepep, varcount, protAf):
         self.protein_data["_id"] = gene
-        self.protein_data["Gene"] = gene
         self.protein_data["UniprotKB AC"] = uniprotKB
         self.protein_data["Taxon ID"] = taxon
-        self.protein_data["Description"] = desc
         self.protein_data["ProtLen"] = protlen
         self.protein_data["ProtWeight"] = protweight
         self.protein_data["ClusterCof"] = clustercof
         self.protein_data["NumNeightbors"] = numneighbors
-        self.prorot_data["UniquePep"] = uniquepep
+        self.protein_data["UniquePep"] = uniquepep
         self.protein_data["VarCount"] = varcount
         self.protein_data["ProtAffinity"] = protAf
 
     def set_taxons(self, taxon, species):
         self.taxon_data["_id"] = taxon
-        self.taxon_data["Taxon ID"] = taxon
         self.taxon_data["Species Name"] = species
 
     def set_exps(self, sys, sys_type, author, pubmed):
         self.exp_data["_id"] = pubmed
-        self.exp_data["Experimental System"] = sys
-        self.exp_data["Experiment System Type"] = sys_type
-        self.exp_data["Author"] = author
-        self.exp_data["Publication Source (PubMed ID)"] = pubmed
 
 
 class Database:
@@ -118,10 +110,27 @@ class Database:
 
     # DB editors
     def insert_clusters(self, cluster_json):
+        """Inserts a list of cluster objects into the database"""
         self.clusters.insert_many(cluster_json)
         
     def remove_all_clusters(self):
         self.clusters.delete_many({})
+        
+    def insert_interaction_list(self, interaction_json):
+        """Inserts a list of interaction objects into the database"""
+        self.interactions.insert_many(interaction_json, ordered = False)
+        
+    def insert_protein_list(self, protein_json):
+        """Inserts a list of protein objects into the database"""
+        self.proteins.insert_many(protein_json, ordered=False)
+        
+    def insert_taxon_list(self, taxonomy_json):
+        """Inserts a list of taxonomy objects into the database"""
+        self.taxonomy.insert_many(taxonomy_json)
+        
+    def insert_exp_detail_list(self, exp_json):
+        """Inserts a list of exp_details objects into the database"""
+        self.expdetails.insert_many(exp_json)
     
     def insert_interaction(self, interaction, primary=True, geneA="", geneB="", score=""):
         """Inserts an interaction object into the database"""
@@ -229,13 +238,13 @@ class Database:
 
     def get_interactions_by_species(self, species_name):
         taxon_id = self.taxonomy.find_one(
-            {"Species Name": species_name})["Taxon ID"]
+            {"Species Name": species_name})["_id"]
         prim_proteins = self.proteins.find({"Taxon ID": taxon_id})
 
         interactions = []
         for protein in prim_proteins:
             # print('Protein Gene Name:', protein['Gene'])
-            interactions += self.get_interactions_by_protein(protein['Gene'])
+            interactions += self.get_interactions_by_protein(protein['_id'])
         return self.get_complete_network(interactions)
 
     def get_all_prots(self, limit=-1):
@@ -526,38 +535,40 @@ def add_mentha_data(file_name, db, species):
 
 
 if __name__ == "__main__":
-    start = time.time()
-    Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
-    MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
-    Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
-    complex_addr = './allComplexes.json'
+    # start = time.time()
+    # Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
+    # MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
+    # Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
+    # complex_addr = './allComplexes.json'
     PPIDb = Database()
     print("init database")
     
-    complexes = json_load(complex_addr)
-    PPIDb.insert_clusters(complexes)
-    print('Done')
-    # print(list(PPIDb.get_all_taxons(5)))
-#     # add_biogrid_data(Biogrid_db_addr, PPIDb)
-#     # add_mint_data(MINT_db_addr, PPIDb)
-#     # add_mentha_data(Mentha_db_addr, PPIDb)
+    # complexes = json_load(complex_addr)
+    # PPIDb.insert_clusters(complexes)
+    # print('Done')
+    print([x['Species Name'] for x in list(PPIDb.get_all_taxons(5))])
+    # add_biogrid_data(Biogrid_db_addr, PPIDb)
+    # add_mint_data(MINT_db_addr, PPIDb)
+    # add_mentha_data(Mentha_db_addr, PPIDb)
 
-#     # PPIDb.remove_all_expdet()
-#     # PPIDb.remove_all_interactions()
-#     # PPIDb.remove_all_interactions(False)
-#     # PPIDb.remove_everything()
-#     # print("removed everything")
+    # PPIDb.remove_all_expdet()
+    # PPIDb.remove_all_interactions()
+    # PPIDb.remove_all_interactions(False)
+    # PPIDb.remove_everything()
+    # print("removed everything")
 
-#     PPIDb.get_stats()
-#     print("got stats")
+    # PPIDb.get_stats()
+    # print("got stats")
 
 #     # for prot in PPIDb.get_all_prots(5):
 #     #     print(prot)
 
 #     # print(PPIDb.get_interactions_by_species("Caenorhabditis elegans"))
 
-#     query = PPIDb.get_interactions_by_species("Saccharomyces cerevisiae")
-#     # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
-#     # print(query)
-#     print(PPIDb.get_graph(query))
+    # query = PPIDb.get_interactions_by_species("Myxococcus xanthus")
+    # # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
+    # graph = PPIDb.get_graph(query)
+    # net = Network(notebook=True, bgcolor="#222222", font_color="white", height="100%", width="100%")
+    # net.from_nx(graph)
+    # net.show("PPIN.html")
 #     print(PPIDb.get_adj_matrix(query))
