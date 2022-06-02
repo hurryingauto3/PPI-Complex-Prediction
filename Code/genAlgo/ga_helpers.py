@@ -167,7 +167,8 @@ class genAlgo(object):
         adjacents = [adjacents[i] for i in range(len(adjacents)) if adjacents[i] not in cluster]
         chromosome[i].extend(adjacents)
         chromosome = self.chromlist2tup(chromosome)
-        print(chromosome)
+        # print(chromosome)
+        return chromosome
 
 
     def mutate(self, chromosome: dict):
@@ -177,6 +178,7 @@ class genAlgo(object):
             if r_1 < self.mutation_rate:
                 for _ in range(self.num_changes):
                     r_2 = random.random()
+                    # print(chromosome)
                     k = random.randrange(0, len(chromosome[i])) 
                     if r_2 < self.tau:
                         chromosome = self.mutate_util(chromosome, i, k)
@@ -186,7 +188,12 @@ class genAlgo(object):
 
 
     def create_offspring(self):
-        pass 
+        elitism_parents, other_parents = self.select_parent()
+        offspring = []
+        for parent in other_parents:
+            offspring.append(self.mutate(parent))
+        # calculate new pop 
+        
 
     def run(self):
         pass
@@ -204,8 +211,9 @@ def cumsum(pop: dict) -> dict:
     return cum_pop
 
     
-ga_instance = genAlgo(sample, 50, 5, 5, 5, 5, 0.1, 0.4, 3, 0.2)
+ga_instance = genAlgo(sample, 10, 5, 5, 5, 5, 0.1, 0.4, 3, 0.2)
 # print(ga_instance.population)
-parent1, parent2 = ga_instance.select_parent()
+# parent1, parent2 = ga_instance.select_parent()
 # print(len(parent1))
-ga_instance.mutate(list(parent1.keys())[0])
+# ga_instance.mutate(list(parent1.keys())[0])
+# ga_instance.create_offspring()
