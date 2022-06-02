@@ -1,4 +1,4 @@
-# TODO: - code mutation
+# TODO: - write createoffspring function 
 #       - main run function
 #       - integrate actual data
 
@@ -57,7 +57,7 @@ class genAlgo(object):
         for i in range(self.pop_size):
             chrom = self.generate_chromosome()
             chrom = tuple(chrom)
-            self.population[chrom] =  self.eval_fitness(chrom) 
+            self.population[chrom] = self.eval_fitness(chrom) 
     
     
     def indices2nodes(self, cluster: list) -> list:
@@ -68,7 +68,15 @@ class genAlgo(object):
             # print(idx)
             cluster_nodes.append(nodes[idx])
         return cluster_nodes
-   
+        
+    def nodes2indices(self, cluster: list) -> list:
+        nodes = list(self.ppin_graph.nodes)
+        cluster_idx = []
+        for node in cluster:
+            cluster_idx.append(nodes.index(node))
+        return cluster_idx
+
+    
     
     def compute_w_ik(self, cluster_nodes: list) -> int:
         w_ik = 0
@@ -127,20 +135,54 @@ class genAlgo(object):
                     break     
         return elitism_parents, other_parents
 
+
+    def chrom2list(self, chromosome: tuple) -> list:
+        chromosome = list(chromosome)
+        for j in range(len(chromosome)):
+            chromosome[j] = list(chromosome[j])
+        return chromosome
+        
+    def chromlist2tup(self, chromosome: list) -> tuple:
+        for j in range(len(chromosome)):
+            chromosome[j] = tuple(chromosome[j])
+        chromosome = tuple(chromosome)
+        return chromosome
+
+
+    def mutate_util(self, chromosome: tuple, i: int, k: int):
+        chromosome = self.chrom2list(chromosome)
+        rand = random.randrange(0, len(chromosome))
+        chromosome[rand].append(chromosome[i][k])
+        chromosome[i].remove(chromosome[i][k])
+        chromosome = self.chromlist2tup(chromosome)
+        # print(chromosome)
+        return chromosome
+
+    def mutate_util2(self, chromosome: tuple, i: int, k: int):
+        chromosome = self.chrom2list(chromosome)
+        cluster = self.indices2nodes(chromosome[i]) 
+        selected_node = cluster[k]
+        adjacents = self.nodes2indices(list(self.ppin_graph.neighbors(selected_node)))
+        cluster = self.nodes2indices(cluster)
+        adjacents = [adjacents[i] for i in range(len(adjacents)) if adjacents[i] not in cluster]
+        chromosome[i].extend(adjacents)
+        chromosome = self.chromlist2tup(chromosome)
+        print(chromosome)
+
+
     def mutate(self, chromosome: dict):
+        # print(chromosome)
         for i in range(len(chromosome)):
             r_1 = random.random()
-            # print(r_1)
             if r_1 < self.mutation_rate:
-                for i in range(self.num_changes):
+                for _ in range(self.num_changes):
                     r_2 = random.random()
+                    k = random.randrange(0, len(chromosome[i])) 
                     if r_2 < self.tau:
-                        # move random node from cluster_i (chosen randomly) to some cluster_j (also chosen randomly i think)
-                        switch_node = list(chromosome)[random.randrange(0, len(chromosome))]
-                        # self.population[chromosome][]
+                        chromosome = self.mutate_util(chromosome, i, k)
                     else: 
-                        # add adjacent nodes of chosen node to cluster_i (randomly chosen, same as above)
-                        pass 
+                        chromosome = self.mutate_util2(chromosome, i, k)
+        return chromosome
 
 
     def create_offspring(self):
@@ -167,20 +209,3 @@ ga_instance = genAlgo(sample, 50, 5, 5, 5, 5, 0.1, 0.4, 3, 0.2)
 parent1, parent2 = ga_instance.select_parent()
 # print(len(parent1))
 ga_instance.mutate(list(parent1.keys())[0])
-#  x = {1:3, 2:12, 3:9, 4:4, 5:10}
-
-# x_sort = dict(sorted(x.items(), key=lambda item: item[1]))
-# print(x_sort)
-# x_sel = {k: x_sort[k] for k in list(x_sort)[:2]}
-# print(x_sel)
-
-# rand_dic = {'a': 4, 'b':2, 'c': 10, 'd': 8, 'e': 11, 'f': 12}
-    # i     pass 
-# print(list(rand_dic.keys()).index("d"))
-# cum = cumsum(rand_dic)
-# print(max([x[1] for x in cum.values()]))
-# print(list(cum.values())[-1][1])
-# print(cum)
-# print(max(cum, key=lambda key: ))
-# for key in cum:
-    # print(cum[key][1])
