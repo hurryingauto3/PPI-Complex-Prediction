@@ -41,7 +41,6 @@ class Data:
 
         self.taxon_data = {
             "_id": "",
-            "Taxon ID": "",
             "Species Name": ""
         }
 
@@ -75,17 +74,15 @@ class Data:
         self.inter_data["Type of data"] = type_
         self.inter_data["Experiment ID"] = exp_id
 
-    def set_proteins(self, gene, uniprotKB, taxon, desc, protlen, protweight, clustercof, numneighbors, uniquepep, varcount, protAf):
+    def set_proteins(self, gene, uniprotKB, taxon, protlen, protweight, clustercof, numneighbors, uniquepep, varcount, protAf):
         self.protein_data["_id"] = gene
-        self.protein_data["Gene"] = gene
         self.protein_data["UniprotKB AC"] = uniprotKB
         self.protein_data["Taxon ID"] = taxon
-        self.protein_data["Description"] = desc
         self.protein_data["ProtLen"] = protlen
         self.protein_data["ProtWeight"] = protweight
         self.protein_data["ClusterCof"] = clustercof
         self.protein_data["NumNeightbors"] = numneighbors
-        self.prorot_data["UniquePep"] = uniquepep
+        self.protein_data["UniquePep"] = uniquepep
         self.protein_data["VarCount"] = varcount
         self.protein_data["ProtAffinity"] = protAf
 
@@ -118,10 +115,27 @@ class Database:
 
     # DB editors
     def insert_clusters(self, cluster_json):
+        """Inserts a list of cluster objects into the database"""
         self.clusters.insert_many(cluster_json)
         
     def remove_all_clusters(self):
         self.clusters.delete_many({})
+        
+    def insert_interaction_list(self, interaction_json):
+        """Inserts a list of interaction objects into the database"""
+        self.interactions.insert_many(interaction_json)
+        
+    def insert_protein_list(self, protein_json):
+        """Inserts a list of protein objects into the database"""
+        self.proteins.insert_many(protein_json)
+        
+    def insert_taxon_list(self, taxonomy_json):
+        """Inserts a list of taxonomy objects into the database"""
+        self.taxonomy.insert_many(taxonomy_json)
+        
+    def insert_exp_detail_list(self, exp_json):
+        """Inserts a list of exp_details objects into the database"""
+        self.expdetails.insert_many(exp_json)
     
     def insert_interaction(self, interaction, primary=True, geneA="", geneB="", score=""):
         """Inserts an interaction object into the database"""
@@ -521,30 +535,30 @@ def add_mentha_data(file_name, db, species):
 
 
 if __name__ == "__main__":
-    start = time.time()
-    Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
-    MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
-    Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
-    complex_addr = './allComplexes.json'
+    # start = time.time()
+    # Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
+    # MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
+    # Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
+    # complex_addr = './allComplexes.json'
     PPIDb = Database()
     print("init database")
     
-    complexes = json_load(complex_addr)
-    PPIDb.insert_clusters(complexes)
-    print('Done')
+    # complexes = json_load(complex_addr)
+    # PPIDb.insert_clusters(complexes)
+    # print('Done')
     # print(list(PPIDb.get_all_taxons(5)))
-#     # add_biogrid_data(Biogrid_db_addr, PPIDb)
-#     # add_mint_data(MINT_db_addr, PPIDb)
-#     # add_mentha_data(Mentha_db_addr, PPIDb)
+    # add_biogrid_data(Biogrid_db_addr, PPIDb)
+    # add_mint_data(MINT_db_addr, PPIDb)
+    # add_mentha_data(Mentha_db_addr, PPIDb)
 
-#     # PPIDb.remove_all_expdet()
-#     # PPIDb.remove_all_interactions()
-#     # PPIDb.remove_all_interactions(False)
-#     # PPIDb.remove_everything()
-#     # print("removed everything")
+    # PPIDb.remove_all_expdet()
+    # PPIDb.remove_all_interactions()
+    # PPIDb.remove_all_interactions(False)
+    # PPIDb.remove_everything()
+    # print("removed everything")
 
-#     PPIDb.get_stats()
-#     print("got stats")
+    PPIDb.get_stats()
+    print("got stats")
 
 #     # for prot in PPIDb.get_all_prots(5):
 #     #     print(prot)
