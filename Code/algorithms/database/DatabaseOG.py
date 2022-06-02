@@ -64,10 +64,9 @@ class Data:
     def get_exps(self):
         return self.exp_data
 
-    def set_inters(self, source, db_id, GeneA, GeneB, score, type_, exp_id):
+    def set_inters(self, source, GeneA, GeneB, score, type_, exp_id):
         self.inter_data["_id"] = GeneA+"_"+GeneB
         self.inter_data["Source"] = source
-        self.inter_data["Database ID"] = db_id
         self.inter_data["Gene A"] = GeneA
         self.inter_data["Gene B"] = GeneB
         self.inter_data["MINT Score"] = score
@@ -88,15 +87,10 @@ class Data:
 
     def set_taxons(self, taxon, species):
         self.taxon_data["_id"] = taxon
-        self.taxon_data["Taxon ID"] = taxon
         self.taxon_data["Species Name"] = species
 
     def set_exps(self, sys, sys_type, author, pubmed):
         self.exp_data["_id"] = pubmed
-        self.exp_data["Experimental System"] = sys
-        self.exp_data["Experiment System Type"] = sys_type
-        self.exp_data["Author"] = author
-        self.exp_data["Publication Source (PubMed ID)"] = pubmed
 
 
 class Database:
@@ -123,11 +117,11 @@ class Database:
         
     def insert_interaction_list(self, interaction_json):
         """Inserts a list of interaction objects into the database"""
-        self.interactions.insert_many(interaction_json)
+        self.interactions.insert_many(interaction_json, ordered = False)
         
     def insert_protein_list(self, protein_json):
         """Inserts a list of protein objects into the database"""
-        self.proteins.insert_many(protein_json)
+        self.proteins.insert_many(protein_json, ordered=False)
         
     def insert_taxon_list(self, taxonomy_json):
         """Inserts a list of taxonomy objects into the database"""

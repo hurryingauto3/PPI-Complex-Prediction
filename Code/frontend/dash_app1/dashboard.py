@@ -89,35 +89,9 @@ def create_dashboard(server, PPIDb):
     )
 
     species = [specie['Species Name'] for specie in list(PPIDb.get_all_taxons(5))]
-    species.insert(0, 'All')
+    # species.insert(0, 'All')
     db = ['All', 'BioGrid', 'Mentha', 'MINT']
-    
-    Human_graph = {
-        1 : {2 : {'weight': 6}, 3 : {'weight': 2}, 4 : {'weight': 8}},
-        2 : {1 : {'weight': 6}},
-        3 : {1 : {'weight': 2}},
-        4 : {1 : {'weight': 8}}
-    }
 
-    All_graph = {
-        1 : {2 : {'weight': 6}, 3 : {'weight': 2}, 4 : {'weight': 8}},
-        2 : {1 : {'weight': 6},},
-        3 : {1 : {'weight': 2}},
-        4 : {1 : {'weight': 8}, 5 : {'weight': 2}},
-        5 : {4 : {'weight': 2}, 6 : {'weight': 3}},
-        6 : {5 : {'weight': 3}}
-    }
-
-    Biogrid_graph = {
-        1 : {4 : {'weight': 8}},
-        4 : {1 : {'weight': 8}, 5 : {'weight': 2}},
-        5 : {4 : {'weight': 2}, 6 : {'weight': 3}},
-        6 : {5 : {'weight': 3}}
-    }
-    
-    # species = ['Human', 'All']
-    # db = ['Biogrid', 'All']
-    
     controls = dbc.Card(
         [
             html.Div(
@@ -172,31 +146,16 @@ def create_dashboard(server, PPIDb):
     ],
     )
     def update_output(specie, db):
-        if specie == 'All' or db == 'All':
-            G = nx.Graph(All_graph)
-        elif specie == 'Homo sapiens':
-            G = nx.Graph(Human_graph)
-        else:
-            G = nx.Graph(Biogrid_graph)
+        query = db.get_interactions_by_species(specie)
+        G = db.get_graph(query)
+        # if specie == 'All' or db == 'All':
+        #     G = nx.Graph(All_graph)
+        # elif specie == 'Homo sapiens':
+        #     G = nx.Graph(Human_graph)
+        # else:
+        #     G = nx.Graph(Biogrid_graph)
         return networkGraph(G)
     
     # init_callbacks(dash_app, Human_graph, All_graph)
 
     return app.server
-
-# def init_callbacks(dash_app, Human_graph, All_graph):
-    # @dash_app.callback(
-    #     Output("my-graph", "figure"),
-    #         [
-    #             Input("species-variable", "value"),
-    #             Input("db-variable", "value"),
-    #         ],
-    # )
-    # def update_output(specie):
-    #     if specie == 'All':
-    #         G = nx.Graph(All_graph)
-    #     else:
-    #         G = nx.Graph(Human_graph)
-    #     return networkGraph(G)
-        
-# Plotly figure
