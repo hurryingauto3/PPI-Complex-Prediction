@@ -4,7 +4,7 @@ from flask_navigation import Navigation
 from flask_nav import Nav
 from flask_nav.elements import Navbar, View
 
-def init_app(PPIDb):
+def init_app(PPIDb, Cluster):
     app = Flask(__name__)
     app.config['DEBUG'] = True
     nav = Navigation(app)
@@ -22,6 +22,6 @@ def init_app(PPIDb):
         from . import routes
         # Import Dash application for protein networks
         from .dash_app1.dashboard import create_dashboard
-        app = create_dashboard(app, PPIDb)
+        app = create_dashboard(app, PPIDb, Cluster)
         
         return app

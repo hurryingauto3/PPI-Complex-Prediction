@@ -12,6 +12,7 @@ import seaborn as sns
 import numpy as np
 
 def draw_cluster_graph(G, cluster_list):
+    print("DRAWING CLUSTER GRAPH\n\n")
     palette = itertools.cycle([f'rgb{tuple((np.array(color)*255).astype(np.uint8))}' for color in sns.color_palette(None, len(cluster_list))])
     no_community = 'white'
     color_map = {}
@@ -92,6 +93,7 @@ def draw_cluster_graph(G, cluster_list):
                              mirror=True))
 
     # figure
+    print("FINISHED CLUSTER GRAPH\n")
     fig = go.Figure(data=[edge_trace, node_trace, eweights_trace], layout=layout)
     return fig
 
@@ -164,10 +166,11 @@ def networkGraph(G):
                              mirror=True))
 
     # figure
+    print("FINISHED NETWORK GRAPH\n")
     fig = go.Figure(data=[edge_trace, node_trace, eweights_trace], layout=layout)
     return fig
 
-def create_dashboard(server, PPIDb):
+def create_dashboard(server, PPIDb, Cluster):
     """Create a Plotly Dash dashboard."""
     app = dash.Dash(
         server=server,
@@ -183,19 +186,19 @@ def create_dashboard(server, PPIDb):
         [
             html.Div(
                 [
-                    dbc.Label("Sort by Species"),
+                    dbc.Label("Filter by Species"),
                     dcc.Dropdown(
                         id="species-variable",
                         options=[
                             {"label": i, "value": i} for i in species
                         ],
-                        value="All",
+                        value=species[0],
                     ),
                 ]
             ),
             html.Div(
                 [
-                    html.Button('Submit', 
+                    html.Button('Filter', 
                                 id = 'specie_button', 
                                 n_clicks = 0),
                 ]
@@ -211,7 +214,6 @@ def create_dashboard(server, PPIDb):
                                 n_clicks = 0),
                 ]
             ),
-            html.Div(id='container-button')
         ],
         body=True,
     )
@@ -241,29 +243,15 @@ def create_dashboard(server, PPIDb):
     def update_graph(bttn_1, bttn_2, bttn_3, specie):
         changed_id = [p['prop_id'] for p in callback_context.triggered][0]
         if "clique_perc_button" in changed_id:
-            query = PPIDb.get_interactions_by_species(specie)
-            G = PPIDb.get_graph(query)
-            cluster = [['RPOB', 'RPOC', 'RPSC', 'RPOA', 'YACL', 'YEEX', 'RPSG', 'RPSJ', 'RPSE', 'RPOZ', 'RPOD',
-                        'RPLL', 'USG', 'GREA', 'HFQ', 'CARD', 'POLA', 'TOPA', 'MREB', 'CCPA', 'GROL', 'RPLA', 
-                        'NUSG', 'P75093', 'RPSL', 'SIGA', 'HUPA', 'GREB', 'RPLD', 'NUSA', 'RPOH', 'RPOS', 'RAPA', 
-                        'KDGR', 'CSPA', 'SSPA', 'RSD', 'RPON', 'CEDA', 'SSB', 'RPLB', 'GAPA', 'FECI', 'FLIA', 'YEGD'
-                        , 'Q50312'], 
-                    ['YCZI', 'TATC2', 'YCLI', 'FRUA', 'SWRC', 'YKOT', 'YKCC', 'YQFF', 'YDGH', 'TATC1', 'TATAC', 
-                        'RACA', 'PPSC', 'YHAP', 'XHLA', 'YQBD', 'CSBC', 'FTSW', 'YOPZ', 'YWQJ', 'SMC', 'YDBI', 
-                        'YTJP', 'TATAY', 'FLIZ', 'WPRA', 'XSEA', 'FTSA', 'MRED', 'YHGE', 'YTDP', 'YABT', 'YYXA', 
-                        'YESS', 'CSSS', 'YDEL', 'ALBF', 'CTAB2', 'LIAS', 'FTSL', 'PBPB', 'DIVIB', 'CITS', 'YKJA', 
-                        'SPOIIE', 'DIVIC', 'YQBO', 'YYAJ', 'PKSJ', 'YHAN', 'NHAK', 'YVBJ', 'YUAB', 'THYA2', 'CHEA', 
-                        'YHDP', 'TATAD', 'YUEB', 'YVAQ', 'FTSH'], 
-                    ['Q1CXR8', 'Q1DF43', 'Q1CWA4', 'Q1D1W0', 'Q1CVS0', 'Q1CWQ1', 'ASGD', 'Q1D8M1', 'Q1D4T4', 
-                        'CHEB1', 'PHOR2', 'PHOP2', 'SDEK', 'Q1D4T3', 'Q1CYV2', 'Q1DCL6', 'Q1D6S6', 'Q1D1V9', 
-                        'Q1DBP2', 'Q1D1K8', 'FRUA', 'Q1D948', 'Q1D6S5', 'PHOR1', 'PILR', 'Q1DBP1', 'Q1CZP2', 
-                        'PILS', 'Q1D3G2', 'FRZS', 'AGLZ', 'Q1DCL7', 'Q1D033', 'Q1DD47', 'Q1CZP3', 'Q1D523', 
-                        'PHOR3', 'Q1CZ93']]
-            return draw_cluster_graph(G, cluster)
+            Cluster.clusterFromPerc(specie, PPIDb)
+            G = Cluster.get_network()
+            clusters = Cluster.get_clusters()
+            return draw_cluster_graph(G, clusters)
         elif "GA_button" in changed_id:
-            query = PPIDb.get_interactions_by_species(specie)
-            G = PPIDb.get_graph(query)
-            return networkGraph(G)
+            Cluster.clusterFromGen(specie, PPIDb)
+            G = Cluster.get_network()
+            clusters = Cluster.get_clusters()
+            return draw_cluster_graph(G, clusters)
         elif "specie_button" in changed_id:
             query = PPIDb.get_interactions_by_species(specie)
             G = PPIDb.get_graph(query)
