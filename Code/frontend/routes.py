@@ -3,16 +3,18 @@ from flask import current_app as app
 
 @app.route('/')
 def index():
-    iframe = '/dashapp/'
-    return render_template('index.html', iframe = iframe)
+    # iframe = '/dashapp/'
+    return render_template('index.html')
 
 @app.route('/protnetwork')
 def protnetwork():
-    return render_template('protnetwork.html')
+    iframe = '/dashapp/'
+    return render_template('protnetwork.html', iframe = iframe)
 
 @app.route('/clustering')
 def clustervis():
-    return render_template('clusters.html')
+    iframe = '/dashapp2/'
+    return render_template('clusters.html', iframe = iframe)
 
 @app.route('/statistics')
 def statistics():

@@ -29,26 +29,25 @@ import time
 #     [0, 0, 0, 0, 0, 0, 6, 0, 0],
 # ]
 
-# Expected Output = [[0, 1, 2, 3],[3, 4, 5, 6, 7, 8]] <- Communities
+# Sample Expected Output = [[0, 1, 2, 3],[3, 4, 5, 6, 7, 8]] <- Communities
 
 
 def find_intensity(clique, G, k):
     prod = 1
     for i in range(len(clique)):
         for j in range(i+1, len(clique)):
-            prod = prod * G[i][j]['weight']
+            prod = prod * G[clique[i]][clique[j]]['weight']
     return prod**(2/(k*(k-1)))
 
 
-def Clique_Percolation(adj_matrix, k, I):
+def Clique_Percolation(G, k, I):
     start = time.time()
-    # create
-    G = nx.from_numpy_matrix(np.matrix(adj_matrix))
     cliques = [clique for clique in nx.enumerate_all_cliques(
         G) if len(clique) == k]
 
     clique_map = {}
     for i in range(len(cliques)):
+        print(cliques[i])
         if find_intensity(cliques[i], G, k) > I:
             clique_map[i+1] = cliques[i]
     perculated_graph = nx.Graph()

@@ -9,6 +9,7 @@ import networkx as nx
 import numpy as np
 import json
 from matplotlib.font_manager import json_load
+from pyvis.network import Network
 
 
 class Data:
@@ -237,13 +238,13 @@ class Database:
 
     def get_interactions_by_species(self, species_name):
         taxon_id = self.taxonomy.find_one(
-            {"Species Name": species_name})["Taxon ID"]
+            {"Species Name": species_name})["_id"]
         prim_proteins = self.proteins.find({"Taxon ID": taxon_id})
 
         interactions = []
         for protein in prim_proteins:
             # print('Protein Gene Name:', protein['Gene'])
-            interactions += self.get_interactions_by_protein(protein['Gene'])
+            interactions += self.get_interactions_by_protein(protein['_id'])
         return self.get_complete_network(interactions)
 
     def get_all_prots(self, limit=-1):
@@ -545,7 +546,7 @@ if __name__ == "__main__":
     # complexes = json_load(complex_addr)
     # PPIDb.insert_clusters(complexes)
     # print('Done')
-    # print(list(PPIDb.get_all_taxons(5)))
+    print([x['Species Name'] for x in list(PPIDb.get_all_taxons(5))])
     # add_biogrid_data(Biogrid_db_addr, PPIDb)
     # add_mint_data(MINT_db_addr, PPIDb)
     # add_mentha_data(Mentha_db_addr, PPIDb)
@@ -556,16 +557,18 @@ if __name__ == "__main__":
     # PPIDb.remove_everything()
     # print("removed everything")
 
-    PPIDb.get_stats()
-    print("got stats")
+    # PPIDb.get_stats()
+    # print("got stats")
 
 #     # for prot in PPIDb.get_all_prots(5):
 #     #     print(prot)
 
 #     # print(PPIDb.get_interactions_by_species("Caenorhabditis elegans"))
 
-#     query = PPIDb.get_interactions_by_species("Saccharomyces cerevisiae")
-#     # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
-#     # print(query)
-#     print(PPIDb.get_graph(query))
+    # query = PPIDb.get_interactions_by_species("Myxococcus xanthus")
+    # # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
+    # graph = PPIDb.get_graph(query)
+    # net = Network(notebook=True, bgcolor="#222222", font_color="white", height="100%", width="100%")
+    # net.from_nx(graph)
+    # net.show("PPIN.html")
 #     print(PPIDb.get_adj_matrix(query))

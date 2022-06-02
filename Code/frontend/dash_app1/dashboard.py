@@ -88,10 +88,33 @@ def create_dashboard(server, PPIDb):
         external_stylesheets=[dbc.themes.BOOTSTRAP]
     )
 
-    species = [specie['Species Name'] for specie in list(PPIDb.get_all_taxons(5))]
-    # species.insert(0, 'All')
-    db = ['All', 'BioGrid', 'Mentha', 'MINT']
+    # Human_graph = {
+    #     1 : {2 : {'weight': 6}, 3 : {'weight': 2}, 4 : {'weight': 8}},
+    #     2 : {1 : {'weight': 6}},
+    #     3 : {1 : {'weight': 2}},
+    #     4 : {1 : {'weight': 8}}
+    # }
 
+    # All_graph = {
+    #     1 : {2 : {'weight': 6}, 3 : {'weight': 2}, 4 : {'weight': 8}},
+    #     2 : {1 : {'weight': 6},},
+    #     3 : {1 : {'weight': 2}},
+    #     4 : {1 : {'weight': 8}, 5 : {'weight': 2}},
+    #     5 : {4 : {'weight': 2}, 6 : {'weight': 3}},
+    #     6 : {5 : {'weight': 3}}
+    # }
+
+    # Biogrid_graph = {
+    #     1 : {4 : {'weight': 8}},
+    #     4 : {1 : {'weight': 8}, 5 : {'weight': 2}},
+    #     5 : {4 : {'weight': 2}, 6 : {'weight': 3}},
+    #     6 : {5 : {'weight': 3}}
+    # }
+    
+    species = [x['Species Name'] for x in list(PPIDb.get_all_taxons(5))]
+    # species = ['Human', 'All']
+    # db = ['Biogrid', 'All']
+    
     controls = dbc.Card(
         [
             html.Div(
@@ -106,18 +129,18 @@ def create_dashboard(server, PPIDb):
                     ),
                 ]
             ),
-            html.Div(
-                [
-                    dbc.Label("Sort by Database"),
-                    dcc.Dropdown(
-                        id="db-variable",
-                        options=[
-                            {"label": i, "value": i} for i in db
-                        ],
-                        value="All",
-                    ),
-                ]
-            ),
+            # html.Div(
+            #     [
+            #         dbc.Label("Sort by Database"),
+            #         dcc.Dropdown(
+            #             id="db-variable",
+            #             options=[
+            #                 {"label": i, "value": i} for i in db
+            #             ],
+            #             value="All",
+            #         ),
+            #     ]
+            # ),
         ],
         body=True,
     )
@@ -125,7 +148,6 @@ def create_dashboard(server, PPIDb):
     # Create Dash Layout
     app.layout = dbc.Container(
         [
-            html.H1("Protein Interaction Graph"),
             html.Hr(),
             dbc.Row(
                 [
@@ -142,15 +164,15 @@ def create_dashboard(server, PPIDb):
     Output("my-graph", "figure"),
     [
         Input("species-variable", "value"),
-        Input("db-variable", "value"),
+        # Input("db-variable", "value"),
     ],
     )
-    def update_output(specie, db):
-        query = db.get_interactions_by_species(specie)
-        G = db.get_graph(query)
+    def update_output(specie):
+        query = PPIDb.get_interactions_by_species(specie)
+        G = PPIDb.get_graph(query)
         # if specie == 'All' or db == 'All':
         #     G = nx.Graph(All_graph)
-        # elif specie == 'Homo sapiens':
+        # elif specie == 'Human':
         #     G = nx.Graph(Human_graph)
         # else:
         #     G = nx.Graph(Biogrid_graph)
