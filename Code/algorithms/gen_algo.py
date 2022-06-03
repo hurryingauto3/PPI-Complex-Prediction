@@ -59,10 +59,11 @@ class genAlgo(object):
     
     def indices2nodes(self, cluster: list) -> list:
         nodes = list(self.ppin_graph.nodes)
+        # print(cluster)
         # print(nodes)
         cluster_nodes = []
         for idx in cluster:
-            # print(idx)
+            print(idx)
             cluster_nodes.append(nodes[idx])
         return cluster_nodes
 
@@ -210,7 +211,9 @@ class genAlgo(object):
             best_chromosomes.append((best_c, self.eval_fitness(best_c)))
         # choose single best clustering from best chromosomes
         final_clustering = max(best_chromosomes, key = lambda key: best_chromosomes[1])
-        return self.chrom2list(final_clustering[0])
+        final_clustering = self.chrom2list(final_clustering[0])
+        # print(final_clustering)
+        return self.indices2nodes(final_clustering)
 
 
 def cumsum(pop: dict) -> dict:
@@ -227,6 +230,7 @@ def cumsum(pop: dict) -> dict:
     
 ga_instance = genAlgo(sample, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2)
 # print(ga_instance.run())    
+ga_instance.run()
 # print(ga_instance.population)
 # parent1, parent2 = ga_instance.select_parent()
 # print(len(parent1))
