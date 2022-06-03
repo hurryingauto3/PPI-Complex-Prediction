@@ -10,6 +10,7 @@ class Cluster:
         self.query = self.PPIDb.get_interactions_by_species(self.species)
         self.Interaction_Network = self.PPIDb.get_graph(self.query)
         self.clusters = {}
+        self.cluster_nodes = {}
    
     def clusterfromAlgo(self, data, source):
         self.clusters[source] = []
