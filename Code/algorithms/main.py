@@ -23,3 +23,8 @@ G = master.get_specie_cluster_graph(species, 'cliqueperc')
 nx.draw(G)
 plt.show()
 
+clusters = Cluster(species, PPIDb)
+clusters.clusterCliquePerc()
+print(clusters.getClusters('cliqueperc'))
+clusters.clusterGenAlgo()
+print(clusters.getClusters('genalgo'))
