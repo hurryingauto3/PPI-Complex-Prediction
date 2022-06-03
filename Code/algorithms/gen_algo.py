@@ -6,18 +6,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
-edges = [('a','b'), ('a','c'), ('a', 'd'), ('b','c'), ('b','d') , ('c','e'),  ('e','f'), ('e','g'), ('f', 'g'), ('a', 'g')]
-
-sample = nx.Graph()
-sample.add_nodes_from(nodes)
-sample.add_edges_from(edges)
-
-# sub = sample.subgraph(['a','b','c', 'd'])
-# print(sub.edges)
-# print(sample.edges(nbunch=['a', 'c']))
-
-
 class genAlgo(object):
     def __init__(self, ppin_graph: nx.Graph, pop_size: int, num_gens: int, num_iters: int,
                 chromosome_size: int, cluster_size: int, elitism_rate: float, mutation_rate: float, 
@@ -236,11 +224,3 @@ def cumsum(pop: dict) -> dict:
     return cum_pop
 
     
-ga_instance = genAlgo(sample, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2)
-print(ga_instance.run())    
-# ga_instance.run()
-# print(ga_instance.population)
-# parent1, parent2 = ga_instance.select_parent()
-# print(len(parent1))
-# ga_instance.mutate(list(parent1.keys())[0])
-# print(ga_instance.create_offspring())
