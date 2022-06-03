@@ -5,6 +5,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+from database.DatabaseOG import Database
 
 nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
 edges = [('a','b'), ('a','c'), ('a', 'd'), ('b','c'), ('b','d') , ('c','e'),  ('e','f'), ('e','g'), ('f', 'g'), ('a', 'g')]
@@ -224,8 +225,12 @@ def cumsum(pop: dict) -> dict:
     # print(cum_pop)
     return cum_pop
 
-    
-ga_instance = genAlgo(sample, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2)
+db = Database()
+db.get_stats()
+query = db.get_interactions_by_species("Myxococcus xanthus")
+
+ga_instance = genAlgo(db.get_graph(query), 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2)
+print(ga_instance.run())
 # print(ga_instance.run())    
 # print(ga_instance.population)
 # parent1, parent2 = ga_instance.select_parent()
