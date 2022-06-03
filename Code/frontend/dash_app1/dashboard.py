@@ -10,6 +10,7 @@ from dash import no_update
 import itertools
 import seaborn as sns
 import numpy as np
+from Code.algorithms.cluster import Cluster
 
 def draw_cluster_graph(G, cluster_list):
     print("DRAWING CLUSTER GRAPH\n\n")
@@ -170,7 +171,12 @@ def networkGraph(G):
     fig = go.Figure(data=[edge_trace, node_trace, eweights_trace], layout=layout)
     return fig
 
-def create_dashboard(server, PPIDb, Cluster):
+def create_dashboard(server, PPIDb):
+    species = 'Myxococcus xanthus'
+    query = PPIDb.get_interactions_by_species(species)
+    Interaction_Network = PPIDb.get_graph(query)
+
+    clusters = Cluster(species, PPIDb)
     """Create a Plotly Dash dashboard."""
     app = dash.Dash(
         server=server,
@@ -243,6 +249,8 @@ def create_dashboard(server, PPIDb, Cluster):
     def update_graph(bttn_1, bttn_2, bttn_3, specie):
         changed_id = [p['prop_id'] for p in callback_context.triggered][0]
         if "clique_perc_button" in changed_id:
+            query = PPIDb.get_interactions_by_species(species)
+            Interaction_Network = PPIDb.get_graph(query)
             Cluster.clusterFromPerc(specie, PPIDb)
             G = Cluster.get_network()
             clusters = Cluster.get_clusters()

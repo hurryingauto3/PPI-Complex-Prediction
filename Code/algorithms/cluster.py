@@ -18,18 +18,26 @@ class Cluster:
     def clusterfromAlgo(self, data, source):
         self.cluster_nodes[source] = data
         self.clusters[source] = []
-        for i in self.query:
-            for j in data:
-                clusterobj = nx.Graph()
-                for k in j:
-                    for l in j:
-                        if i['Gene A'] == k and i['Gene B'] == l or i['Gene B'] == l and i['Gene A'] == k:
-                            clusterobj.add_edge(k, l)
-                self.clusters[source].append(clusterobj)
-                self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
+        for cluster in data:
+            clusterobj = nx.Graph()
+            for i in range(len(cluster)):
+                for j in range(i, len(cluster)):
+                    if cluster[j] in self.Interaction_Network[cluster[i]].keys():
+                        clusterobj.add_edge(cluster[i], cluster[j])
+            self.clusters[source].append(clusterobj)
+            self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
+        # for i in self.query:
+        #     for j in data:
+        #         clusterobj = nx.Graph()
+        #         for k in j:
+        #             for l in j:
+        #                 if i['Gene A'] == k and i['Gene B'] == l or i['Gene B'] == l and i['Gene A'] == k:
+        #                     clusterobj.add_edge(k, l)
+        #         self.clusters[source].append(clusterobj)
+        #         self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
 
-    def clusterCliquePerc(self):
-        self.clusterfromAlgo(Clique_Percolation(self.Interaction_Network, k = 4, I = 0.05), 'cliqueperc')
+    def clusterCliquePerc(self, k = 4, I = 0.05):
+        self.clusterfromAlgo(Clique_Percolation(self.Interaction_Network, k, I), 'cliqueperc')
     
     def clusterGenAlgo(self):
         self.clusterfromAlgo(genAlgo(self.Interaction_Network, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2).run(), 'genalgo')
