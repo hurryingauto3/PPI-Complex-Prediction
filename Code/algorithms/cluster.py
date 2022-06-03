@@ -10,9 +10,11 @@ class Cluster:
         self.query = self.PPIDb.get_interactions_by_species(self.species)
         self.Interaction_Network = self.PPIDb.get_graph(self.query)
         self.clusters = {}
+        self.cluster_nodes = {}
    
     def clusterFromPerc(self, k = 4, I = 0.05):
         self.clusters['cliqueperc'] = Clique_Percolation(self.Interaction_Network, k, I)
+        
 
     def clusterFromGen(self, data, source):
         self.clusters[source] = []
