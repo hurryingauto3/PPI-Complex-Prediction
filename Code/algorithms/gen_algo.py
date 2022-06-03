@@ -1,5 +1,4 @@
 # TODO: - fix bug in mutate
-#       - fix output issue 
 #       - integrate actual data
 
 import networkx as nx 
