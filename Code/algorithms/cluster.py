@@ -9,23 +9,26 @@ class Cluster:
         self.species = species
         self.query = self.PPIDb.get_interactions_by_species(self.species)
         self.Interaction_Network = self.PPIDb.get_graph(self.query)
-        self.clusters = {}
-        self.cluster_nodes = {}
+        self.clusters = {'cliqueperc' : [], 'genalgo' : []}
+        self.cluster_nodes = {'cliqueperc' : [], 'genalgo' : []}
         self.complete_graph = {'cliqueperc' : nx.Graph(),
                                'genalgo' : nx.Graph()
                                }
    
     def clusterfromAlgo(self, data, source):
-        self.cluster_nodes[source] = data
-        self.clusters[source] = []
-        for cluster in data:
-            clusterobj = nx.Graph()
-            for i in range(len(cluster)):
-                for j in range(i, len(cluster)):
-                    if cluster[j] in self.Interaction_Network[cluster[i]].keys():
-                        clusterobj.add_edge(cluster[i], cluster[j])
-            self.clusters[source].append(clusterobj)
-            self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
+        if source == 'cliqueperc' and self.cluster_nodes['cliqueperc'] == []:
+            pass
+        else:
+            self.cluster_nodes[source] = data
+            self.clusters[source] = []
+            for cluster in data:
+                clusterobj = nx.Graph()
+                for i in range(len(cluster)):
+                    for j in range(i, len(cluster)):
+                        if cluster[j] in self.Interaction_Network[cluster[i]].keys():
+                            clusterobj.add_edge(cluster[i], cluster[j])
+                self.clusters[source].append(clusterobj)
+                self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
         # for i in self.query:
         #     for j in data:
         #         clusterobj = nx.Graph()
