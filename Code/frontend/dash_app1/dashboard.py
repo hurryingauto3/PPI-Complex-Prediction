@@ -180,7 +180,7 @@ def create_dashboard(server, PPIDb, Cluster):
     
     G = nx.Graph()
     
-    species = [x['Species Name'] for x in list(PPIDb.get_all_taxons(5))]
+    species = [x['Species Name'] for x in list(PPIDb.get_all_taxons(30))]
     
     controls = dbc.Card(
         [
