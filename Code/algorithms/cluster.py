@@ -1,7 +1,7 @@
 import networkx as nx
-from .database.DatabaseOG import Database, Data
-from .clique_perc import Clique_Percolation, find_intensity
-from .evolalgo import Chromosome, evolAlgo
+from database.DatabaseOG import Database, Data
+from clique_perc import Clique_Percolation, find_intensity
+from gen_algo import genAlgo
 
 class Cluster:
     def __init__(self, species, PPIDb):
@@ -11,10 +11,7 @@ class Cluster:
         self.Interaction_Network = self.PPIDb.get_graph(self.query)
         self.clusters = {}
    
-    def clusterFromPerc(self, k = 4, I = 0.05):
-        self.clusters['cliqueperc'] = Clique_Percolation(self.Interaction_Network, k, I)
-
-    def clusterFromGen(self, data, source):
+    def clusterfromAlgo(self, data, source):
         self.clusters[source] = []
         for i in self.query:
             for j in data:
@@ -24,6 +21,12 @@ class Cluster:
                         if i['Gene A'] == k and i['Gene B'] == l or i['Gene B'] == l and i['Gene A'] == k:
                             clusterobj.add_edge(k, l)
                 self.clusters[source].append(clusterobj)
+
+    def clusterCliquePerc(self):
+        self.clusterfromAlgo(Clique_Percolation(self.Interaction_Network, k = 4, I = 0.05), 'cliqueperc')
+    
+    def clusterGenAlgo(self):
+        self.clusterfromAlgo(genAlgo(self.Interaction_Network, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2).run(), 'genalgo')
 
     def get_clusterCount(self, source = 'all'):
         if source == 'all':
