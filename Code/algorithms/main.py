@@ -9,3 +9,6 @@ Interaction_Network = PPIDb.get_graph(query)
 clusters = Cluster(species, PPIDb)
 clusters.clusterCliquePerc()
 clusters.clusterGenAlgo()
+
+print(clusters.getClusters('cliqueperc'))
+print(clusters.get_cluster_size('genAlgo'))
