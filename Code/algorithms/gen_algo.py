@@ -1,4 +1,5 @@
-# TODO: - fix bug in mutate 
+# TODO: - fix bug in mutate
+#       - fix output issue 
 #       - integrate actual data
 
 import networkx as nx 
@@ -59,6 +60,7 @@ class genAlgo(object):
     
     def indices2nodes(self, cluster: list) -> list:
         nodes = list(self.ppin_graph.nodes)
+        # print(cluster)
         # print(nodes)
         cluster_nodes = []
         for idx in cluster:
@@ -196,6 +198,13 @@ class genAlgo(object):
             new_pop[child] = 0
         return new_pop 
 
+    def format_output(self, clustering):
+        cluster_nodes = []
+        for cluster in clustering:
+            cluster_nodes.append(self.indices2nodes(cluster))
+        return cluster_nodes   
+
+
     def run(self):
         best_chromosomes = []
         for iter in range(self.num_iters):
@@ -210,7 +219,10 @@ class genAlgo(object):
             best_chromosomes.append((best_c, self.eval_fitness(best_c)))
         # choose single best clustering from best chromosomes
         final_clustering = max(best_chromosomes, key = lambda key: best_chromosomes[1])
-        return self.chrom2list(final_clustering[0])
+        # final_clustering = self.chrom2list(final_clustering[0])
+        final_clustering = final_clustering[0]
+        # print(final_clustering)
+        return self.format_output(final_clustering)
 
 
 def cumsum(pop: dict) -> dict:
@@ -226,7 +238,8 @@ def cumsum(pop: dict) -> dict:
 
     
 ga_instance = genAlgo(sample, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2)
-# print(ga_instance.run())    
+print(ga_instance.run())    
+# ga_instance.run()
 # print(ga_instance.population)
 # parent1, parent2 = ga_instance.select_parent()
 # print(len(parent1))
