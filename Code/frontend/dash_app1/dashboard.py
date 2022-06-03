@@ -10,7 +10,6 @@ from dash import no_update
 import itertools
 import seaborn as sns
 import numpy as np
-from Code.algorithms.cluster import Cluster
 
 def draw_cluster_graph(G, cluster_list):
     print("DRAWING CLUSTER GRAPH\n\n")
@@ -171,12 +170,7 @@ def networkGraph(G):
     fig = go.Figure(data=[edge_trace, node_trace, eweights_trace], layout=layout)
     return fig
 
-def create_dashboard(server, PPIDb):
-    species = 'Myxococcus xanthus'
-    query = PPIDb.get_interactions_by_species(species)
-    Interaction_Network = PPIDb.get_graph(query)
-
-    clusters = Cluster(species, PPIDb)
+def create_dashboard(server, master):
     """Create a Plotly Dash dashboard."""
     app = dash.Dash(
         server=server,
@@ -186,7 +180,7 @@ def create_dashboard(server, PPIDb):
     
     G = nx.Graph()
     
-    species = [x['Species Name'] for x in list(PPIDb.get_all_taxons(30))]
+    species = [x['Species Name'] for x in list(master.get_taxons(30))]
     
     controls = dbc.Card(
         [
@@ -249,22 +243,33 @@ def create_dashboard(server, PPIDb):
     def update_graph(bttn_1, bttn_2, bttn_3, specie):
         changed_id = [p['prop_id'] for p in callback_context.triggered][0]
         if "clique_perc_button" in changed_id:
-            query = PPIDb.get_interactions_by_species(species)
-            Interaction_Network = PPIDb.get_graph(query)
-            Cluster.clusterFromPerc(specie, PPIDb)
-            G = Cluster.get_network()
-            clusters = Cluster.get_clusters()
+            # query = PPIDb.get_interactions_by_species(species)
+            # Interaction_Network = PPIDb.get_graph(query)
+            # Cluster.clusterFromPerc(specie, PPIDb)
+            # G = Cluster.get_network()
+            # clusters = Cluster.get_clusters()
+            # return draw_cluster_graph(G, clusters)
+            master.add_perc_for_specie(specie)
+            clusters = master.get_specie_cluster_nodes(specie, 'cliqueperc')
+            G = master.get_specie_cluster_graph(specie, 'cliqueperc')
             return draw_cluster_graph(G, clusters)
         elif "GA_button" in changed_id:
-            Cluster.clusterFromGen(specie, PPIDb)
-            G = Cluster.get_network()
-            clusters = Cluster.get_clusters()
+            # Cluster.clusterFromGen(specie, PPIDb)
+            # G = Cluster.get_network()
+            # clusters = Cluster.get_clusters()
+            # return draw_cluster_graph(G, clusters)
+            print('starting GA')
+            master.add_gen_for_specie(specie)
+            print('completed GA')
+            clusters = master.get_specie_cluster_nodes(specie, 'genalgo')
+            G = master.get_specie_cluster_graph(specie, 'genalgo')
             return draw_cluster_graph(G, clusters)
         elif "specie_button" in changed_id:
-            query = PPIDb.get_interactions_by_species(specie)
-            G = PPIDb.get_graph(query)
+            # query = PPIDb.get_interactions_by_species(specie)
+            G = master.get_specie_interactions(specie)
             return networkGraph(G)
         else:
+            # master.get_specie_interactions()
             G = nx.Graph()
             return networkGraph(G)
 

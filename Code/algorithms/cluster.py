@@ -1,7 +1,7 @@
 import networkx as nx
-from database.DatabaseOG import Database, Data
-from clique_perc import Clique_Percolation, find_intensity
-from gen_algo import genAlgo
+from .database.DatabaseOG import Database, Data
+from .clique_perc import Clique_Percolation, find_intensity
+from .gen_algo import genAlgo
 
 class Cluster:
     def __init__(self, species, PPIDb):
