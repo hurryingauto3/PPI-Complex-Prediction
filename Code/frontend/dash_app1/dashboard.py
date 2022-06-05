@@ -261,7 +261,7 @@ def create_dashboard(server, master):
         elif "GA_button" in changed_id:
             print("pressed GA button")
             print('starting GA')
-            master.add_gen_for_specie(specie)
+            master.add_gen_for_specie(specie, 20, 10, 1)
             print('completed GA')
             clusters = master.get_specie_cluster_nodes(specie, 'genalgo')
             G = master.get_specie_cluster_graph(specie, 'genalgo')

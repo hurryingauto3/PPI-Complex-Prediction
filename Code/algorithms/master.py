@@ -70,8 +70,9 @@ class Master:
         pass
     
     def convert_results_to_latex(self, result):
+        columns = len(result[0])
         table = Texttable()
-        table.set_cols_align(["c"] * 4)
+        table.set_cols_align(["c"] * columns)
         table.set_deco(Texttable.HEADER | Texttable.VLINES)
         table.add_rows(result)
         latex_bit = latextable.draw_latex(table)
