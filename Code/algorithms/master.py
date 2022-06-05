@@ -9,19 +9,27 @@ class Master:
     def __init__(self):
         self.PPIDb = Database()
         self.cluster_species = {}
-        for x in list(self.PPIDb.get_all_taxons()):
-            specie = x['Species Name']
+        # for x in list(self.PPIDb.get_all_taxons(30)):
+        #     specie = x['Species Name']
+        #     self.cluster_species[specie] = Cluster(specie, self.PPIDb)
+        #     print("Added: " + specie)
+        
+    def add_specie(self, specie):
+        if specie not in self.cluster_species.keys():
             self.cluster_species[specie] = Cluster(specie, self.PPIDb)
         
     def add_perc_for_specie(self, specie, k = 4, I = 0.05):
+        self.add_specie(specie)
         self.cluster_species[specie].clusterCliquePerc(k, I)
             
     def add_gen_for_specie(self, specie, pop_size = 20, num_gens = 10, num_iters = 10, chromosome_size = 5, cluster_size = 5, 
                            elitism_rate = 0.1, mutation_rate = 0.4, num_changes = 3, tau = 0.2):
+        self.add_specie(specie)
         self.cluster_species[specie].clusterGenAlgo(pop_size, num_gens, num_iters, chromosome_size, 
                                      cluster_size, elitism_rate, mutation_rate, num_changes, tau)
         
     def get_specie_interactions(self, specie):
+        self.add_specie(specie)
         return self.cluster_species[specie].get_network()
         
     def get_specie_clusters(self, specie, source = 'all'):
