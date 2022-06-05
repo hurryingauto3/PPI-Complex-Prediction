@@ -54,15 +54,15 @@ class Master:
         return self.cluster_species[specie].get_consensus()
     
     def get_all_results_perc(self, k, I):
-        result = [[]]
-        for specie in ['Myxococcus xanthus', 'Homo sapien']:
+        result = [[""]]
+        for specie in ['Myxococcus xanthus', 'Homo sapien', 'Treponema denticola']:
             for k in range(3, 6):
                 result[0].append(k)
                 for I in np.arange(0.05, 0.6, 0.1):
                     self.add_perc_for_specie(specie, k, I)
                     cluster_size = self.cluster_species[specie].get_cluster_size('cliqueperc')
                     cluster_count = self.cluster_species[specie].get_clusterCount('cliqueperc')
-                    result.append([I, cluster_size, cluster_count])  
+                    result.append([specie, I, cluster_size, cluster_count])  
         return result      
     
     def get_all_result_gen(self, pop_size, num_gens, num_iters, chromosome_size, cluster_size, 
