@@ -250,7 +250,7 @@ def create_dashboard(server, master):
         Input("consensus_button", "n_clicks"),
         State("species-variable", "value")
     )
-    def update_graph(bttn_1, bttn_2, bttn_3, specie):
+    def update_graph(bttn_1, bttn_2, bttn_3, bttn_4, specie):
         changed_id = [p['prop_id'] for p in callback_context.triggered][0]
         if "clique_perc_button" in changed_id:
             # query = PPIDb.get_interactions_by_species(species)

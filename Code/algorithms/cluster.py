@@ -16,34 +16,27 @@ class Cluster:
                                }
    
     def clusterfromAlgo(self, data, source):
-        if source == 'cliqueperc' and self.cluster_nodes['cliqueperc'] == []:
-            pass
-        else:
-            self.cluster_nodes[source] = data
-            self.clusters[source] = []
-            for cluster in data:
-                clusterobj = nx.Graph()
-                for i in range(len(cluster)):
-                    for j in range(i, len(cluster)):
-                        if cluster[j] in self.Interaction_Network[cluster[i]].keys():
-                            clusterobj.add_edge(cluster[i], cluster[j])
-                self.clusters[source].append(clusterobj)
-                self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
-        # for i in self.query:
-        #     for j in data:
-        #         clusterobj = nx.Graph()
-        #         for k in j:
-        #             for l in j:
-        #                 if i['Gene A'] == k and i['Gene B'] == l or i['Gene B'] == l and i['Gene A'] == k:
-        #                     clusterobj.add_edge(k, l)
-        #         self.clusters[source].append(clusterobj)
-        #         self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
+        # if source == 'cliqueperc' and self.cluster_nodes['cliqueperc'] == []:
+        #     pass
+        # else:
+        self.cluster_nodes[source] = data
+        self.clusters[source] = []
+        for cluster in data:
+            clusterobj = nx.Graph()
+            for i in range(len(cluster)):
+                for j in range(i, len(cluster)):
+                    if cluster[j] in self.Interaction_Network[cluster[i]].keys():
+                        clusterobj.add_edge(cluster[i], cluster[j])
+            self.clusters[source].append(clusterobj)
+            self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
 
     def clusterCliquePerc(self, k = 4, I = 0.05):
         self.clusterfromAlgo(Clique_Percolation(self.Interaction_Network, k, I), 'cliqueperc')
     
-    def clusterGenAlgo(self):
-        self.clusterfromAlgo(genAlgo(self.Interaction_Network, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2).run(), 'genalgo')
+    def clusterGenAlgo(self, pop_size = 20, num_gens = 10, num_iters = 10, chromosome_size = 5, cluster_size = 5, 
+                           elitism_rate = 0.1, mutation_rate = 0.4, num_changes = 3, tau = 0.2):
+        self.clusterfromAlgo(genAlgo(self.Interaction_Network, pop_size, num_gens, num_iters, chromosome_size, 
+                                     cluster_size, elitism_rate, mutation_rate, num_changes, tau).run(), 'genalgo')
 
     def get_consensus(self):
         #call consensus algo here and return graph object

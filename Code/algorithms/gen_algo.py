@@ -1,6 +1,5 @@
 # TODO: - fix bug in mutate
 #       - integrate actual data
-
 import networkx as nx 
 import numpy as np
 import matplotlib.pyplot as plt
