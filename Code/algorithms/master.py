@@ -39,6 +39,9 @@ class Master:
     
     def get_taxons(self, limit = -1):
         return list(self.PPIDb.get_all_taxons(limit))
+    
+    def get_consensus(self, specie):
+        return self.cluster_species[specie].get_consensus()
         
     
     

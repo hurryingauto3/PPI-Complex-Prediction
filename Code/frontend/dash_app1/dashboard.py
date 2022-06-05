@@ -214,6 +214,15 @@ def create_dashboard(server, master):
                                 n_clicks = 0),
                 ]
             ),
+            html.Div(
+                html.Div(
+                [
+                    html.Button('Apply Consensus', 
+                                id = 'consensus_button', 
+                                n_clicks = 0),
+                ]
+            ),    
+            ),
         ],
         body=True,
     )
@@ -238,6 +247,7 @@ def create_dashboard(server, master):
         Input("clique_perc_button", "n_clicks"),
         Input("GA_button", "n_clicks"),
         Input("specie_button", "n_clicks"),
+        Input("consensus_button", "n_clicks"),
         State("species-variable", "value")
     )
     def update_graph(bttn_1, bttn_2, bttn_3, specie):
@@ -267,6 +277,10 @@ def create_dashboard(server, master):
         elif "specie_button" in changed_id:
             # query = PPIDb.get_interactions_by_species(specie)
             G = master.get_specie_interactions(specie)
+            return networkGraph(G)
+        elif "consensus_button" in changed_id:
+            # G = master.get_consensus(specie)
+            G = nx.Graph()
             return networkGraph(G)
         else:
             # master.get_specie_interactions()

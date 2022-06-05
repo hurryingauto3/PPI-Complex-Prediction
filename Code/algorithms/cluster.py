@@ -45,6 +45,10 @@ class Cluster:
     def clusterGenAlgo(self):
         self.clusterfromAlgo(genAlgo(self.Interaction_Network, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2).run(), 'genalgo')
 
+    def get_consensus(self):
+        #call consensus algo here and return graph object
+        pass
+    
     def get_clusterCount(self, source = 'all'):
         if source == 'all':
             return len(self.getClusters())
