@@ -52,14 +52,13 @@ class Master:
                     self.add_perc_for_specie(specie, k, I)
                     cluster_size = self.cluster_species[specie].get_cluster_size('cliqueperc')
                     cluster_count = self.cluster_species[specie].get_clusterCount('cliqueperc')
-                    result.append([I, cluster_size, cluster_count])  
+                    result.append([I, cluster_size, cluster_count])
         return result
     
     def get_all_result_gen(self, pop_size, num_gens, num_iters, chromosome_size, cluster_size, 
                            elitism_rate, mutation_rate, num_changes, tau):
         params = [
             []
-            
         ]
         result = [[]]
         for specie in self.cluster_species.keys():
