@@ -3,7 +3,7 @@
 # from master import Master
 # # import networkx as nx
 # # import matplotlib.pyplot as plt
-# import numpy as np
+import numpy as np
 
 
 # PPIDb = Database()
@@ -30,7 +30,9 @@
 # print(clusters.getClusters('cliqueperc'))
 # clusters.clusterGenAlgo()
 # print(clusters.getClusters('genalgo'))
-
-# for I in np.arange(0.05, 0.8, 0.05):
-#     for k in range(3, 7):
-#         print((I, k))
+count = 0
+for x in range(3):
+    for k in range(3, 5):
+        for I in np.arange(0.05, 0.6, 0.1):
+            count += 1
+print(count)
