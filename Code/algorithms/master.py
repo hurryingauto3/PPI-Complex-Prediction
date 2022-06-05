@@ -55,7 +55,11 @@ class Master:
     
     def get_all_results_perc(self, k, I):
         result = [[""]]
+<<<<<<< HEAD
         for specie in ['Myxococcus xanthus', 'Treponema denticola']:
+=======
+        for specie in ['Myxococcus xanthus', 'Homo sapiens', 'Treponema denticola']:
+>>>>>>> c112d6a11506f42af2744ff69c39afb4558ca1e1
             for k in range(3, 6):
                 result[0].append(k)
                 for I in np.arange(0.05, 0.6, 0.1):
@@ -90,8 +94,9 @@ class Master:
 
     
     def convert_results_to_latex(self, result):
+        columns = len(result[0])
         table = Texttable()
-        table.set_cols_align(["c"] * 4)
+        table.set_cols_align(["c"] * columns)
         table.set_deco(Texttable.HEADER | Texttable.VLINES)
         table.add_rows(result)
         latex_bit = latextable.draw_latex(table)

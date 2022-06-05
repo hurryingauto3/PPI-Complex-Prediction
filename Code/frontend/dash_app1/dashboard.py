@@ -253,37 +253,30 @@ def create_dashboard(server, master):
     def update_graph(bttn_1, bttn_2, bttn_3, bttn_4, specie):
         changed_id = [p['prop_id'] for p in callback_context.triggered][0]
         if "clique_perc_button" in changed_id:
-            # query = PPIDb.get_interactions_by_species(species)
-            # Interaction_Network = PPIDb.get_graph(query)
-            # Cluster.clusterFromPerc(specie, PPIDb)
-            # G = Cluster.get_network()
-            # clusters = Cluster.get_clusters()
-            # return draw_cluster_graph(G, clusters)
+            print("pressed clique button")
             master.add_perc_for_specie(specie)
             clusters = master.get_specie_cluster_nodes(specie, 'cliqueperc')
             G = master.get_specie_cluster_graph(specie, 'cliqueperc')
             return draw_cluster_graph(G, clusters)
         elif "GA_button" in changed_id:
-            # Cluster.clusterFromGen(specie, PPIDb)
-            # G = Cluster.get_network()
-            # clusters = Cluster.get_clusters()
-            # return draw_cluster_graph(G, clusters)
+            print("pressed GA button")
             print('starting GA')
-            master.add_gen_for_specie(specie)
+            master.add_gen_for_specie(specie, 20, 10, 2)
             print('completed GA')
             clusters = master.get_specie_cluster_nodes(specie, 'genalgo')
             G = master.get_specie_cluster_graph(specie, 'genalgo')
             return draw_cluster_graph(G, clusters)
         elif "specie_button" in changed_id:
-            # query = PPIDb.get_interactions_by_species(specie)
+            print("pressed filter button")
             G = master.get_specie_interactions(specie)
             return networkGraph(G)
         elif "consensus_button" in changed_id:
+            print("pressed consensus button")
             # G = master.get_consensus(specie)
             G = nx.Graph()
             return networkGraph(G)
         else:
-            # master.get_specie_interactions()
+            print("done nothing yet")
             G = nx.Graph()
             return networkGraph(G)
 
