@@ -46,7 +46,7 @@ class Cluster:
         if source == 'all':
             return len(self.getClusters())
         elif source == 'cliqueperc' or source == 'genalgo':
-            return len(self.get_clusters(source))
+            return len(self.getClusters(source))
 
     def getClusters(self, source = 'all'):
         if source == 'all':
@@ -56,9 +56,9 @@ class Cluster:
     
     def get_cluster_size(self, source = 'all'):
         if source == 'all':
-            return [len(i) for i in self.get_clusters()]
+            return [len(i) for i in self.getClusters()]
         elif source == 'cliqueperc' or source == 'genalgo':
-            return [len(i) for i in self.get_clusters(source)]
+            return [len(i) for i in self.getClusters(source)]
     
     def get_cluster_nodes(self, source = 'all'):
         if source == 'all':
