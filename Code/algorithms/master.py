@@ -1,6 +1,8 @@
-from Code.algorithms.test import PPIDb
-from .database.DatabaseOG import Database, Data
-from .cluster import Cluster
+from sqlite3 import paramstyle
+from unittest import result
+# from algorithms.test import PPIDb
+from algorithms.database.DatabaseOG import Database, Data
+from cluster import Cluster
 import numpy as np
 from tabulate import tabulate
 from texttable import Texttable
@@ -10,7 +12,7 @@ class Master:
     def __init__(self):
         self.PPIDb = Database()
         self.cluster_species = {}
-        for x in list(PPIDb.get_all_taxons()):
+        for x in list(self.PPIDb.get_all_taxons()):
             specie = x['Species Name']
             self.cluster_species[specie] = Cluster(specie, self.PPIDb)
         
@@ -49,18 +51,31 @@ class Master:
     def get_all_results_perc(self, k, I):
         result = [[]]
         for specie in self.cluster_species.keys():
-            for k in range(3, 7):
+            for k in range(3, 4):
                 result[0].append(k)
-                for I in np.arange(0.05, 0.8, 0.05):
+                for I in np.arange(0.05, 0.6, 0.1):
                     self.add_perc_for_specie(specie, k, I)
                     cluster_size = self.cluster_species[specie].get_cluster_size('cliqueperc')
                     cluster_count = self.cluster_species[specie].get_clusterCount('cliqueperc')
                     result.append([I, cluster_size, cluster_count])  
-        return result      
+        return result
     
     def get_all_result_gen(self, pop_size, num_gens, num_iters, chromosome_size, cluster_size, 
                            elitism_rate, mutation_rate, num_changes, tau):
-        pass
+        params = [
+            []
+            
+        ]
+        result = [[]]
+        for specie in self.cluster_species.keys():
+            for i in params:
+                result[0].append(i)
+                self.add_gen_for_specie(specie, i[0], [1], i[2], i[3], i[4], i[5], i[6], i[7], i[8], i[9], i[10])
+                cluster_size = self.cluster_species[specie].get_cluster_size('genalgo')
+                cluster_count = self.cluster_species[specie].get_clusterCount('genalgo')
+                result.append([cluster_size, cluster_count])
+        return result
+
     
     def convert_results_to_latex(self, result):
         table = Texttable()
