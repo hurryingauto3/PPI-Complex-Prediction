@@ -1,4 +1,3 @@
-from Code.algorithms.test import PPIDb
 from .database.DatabaseOG import Database, Data
 from .cluster import Cluster
 import numpy as np
@@ -10,7 +9,7 @@ class Master:
     def __init__(self):
         self.PPIDb = Database()
         self.cluster_species = {}
-        for x in list(PPIDb.get_all_taxons()):
+        for x in list(self.PPIDb.get_all_taxons()):
             specie = x['Species Name']
             self.cluster_species[specie] = Cluster(specie, self.PPIDb)
         
@@ -48,10 +47,10 @@ class Master:
     
     def get_all_results_perc(self, k, I):
         result = [[]]
-        for specie in self.cluster_species.keys():
-            for k in range(3, 7):
+        for specie in ['Myxococcus xanthus', 'Homo sapien']:
+            for k in range(3, 6):
                 result[0].append(k)
-                for I in np.arange(0.05, 0.8, 0.05):
+                for I in np.arange(0.05, 0.6, 0.1):
                     self.add_perc_for_specie(specie, k, I)
                     cluster_size = self.cluster_species[specie].get_cluster_size('cliqueperc')
                     cluster_count = self.cluster_species[specie].get_clusterCount('cliqueperc')
