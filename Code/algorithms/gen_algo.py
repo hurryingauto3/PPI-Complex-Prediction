@@ -6,12 +6,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
-edges = [('a','b'), ('a','c'), ('a', 'd'), ('b','c'), ('b','d') , ('c','e'),  ('e','f'), ('e','g'), ('f', 'g'), ('a', 'g')]
+# nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+# edges = [('a','b'), ('a','c'), ('a', 'd'), ('b','c'), ('b','d') , ('c','e'),  ('e','f'), ('e','g'), ('f', 'g'), ('a', 'g')]
 
-sample = nx.Graph()
-sample.add_nodes_from(nodes)
-sample.add_edges_from(edges)
+# sample = nx.Graph()
+# sample.add_nodes_from(nodes)
+# sample.add_edges_from(edges)
 
 # sub = sample.subgraph(['a','b','c', 'd'])
 # print(sub.edges)
@@ -236,8 +236,17 @@ def cumsum(pop: dict) -> dict:
     return cum_pop
 
     
-ga_instance = genAlgo(sample, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2)
-print(ga_instance.run())    
+# ga_instance = genAlgo(sample, 50, 100, 50, 25, 10, 0.1, 0.4, 3, 0.2)
+# print(ga_instance.run())    
+
+
+# params = [
+#     [0.1, 0.4, 3, 0.2], 
+#     [0.1, 0.5, 3, 0.2], 
+#     [0.1, 0.6, 3, 0.2], 
+#     [0.1, 0.7, 3, 0.2], 
+#     [0.1, 0.8, 3, 0.2]
+# ]
 # ga_instance.run()
 # print(ga_instance.population)
 # parent1, parent2 = ga_instance.select_parent()
