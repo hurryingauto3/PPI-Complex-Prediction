@@ -70,17 +70,13 @@ class Master:
     def get_all_result_gen(self, pop_size, num_gens, num_iters, chromosome_size, cluster_size, 
                            elitism_rate, mutation_rate, num_changes, tau):
         params = [
-            [0.1, 0.4, 0.2], 
-            [0.1, 0.5, 0.2], 
-            [0.1, 0.6, 0.2], 
-            [0.1, 0.7, 0.2], 
-            [0.1, 0.8, 0.2]
+            0.4, 0.5, 0.6, 0.7, 0.8
             ]
         result = [[]]
         for specie in ['Myxococcus xanthus', 'Treponema denticola']:
             for i in params:
                 result[0].append(i)
-                self.add_gen_for_specie(specie,  20, 25, 10, 10, 10, i[0], i[1], 3, i[3])
+                self.add_gen_for_specie(specie,  20, 25, 10, 10, 10, 0.1, i, 3, 0.2)
                 cluster_size = self.cluster_species[specie].get_cluster_size('genalgo')
                 cluster_count = self.cluster_species[specie].get_clusterCount('genalgo')
                 result.append(i+[round(sum(cluster_size)/len(cluster_size),2), cluster_count])
