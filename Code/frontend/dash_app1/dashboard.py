@@ -13,6 +13,7 @@ import numpy as np
 
 def draw_cluster_graph(G, cluster_list):
     print("DRAWING CLUSTER GRAPH\n\n")
+    print(G)
     palette = itertools.cycle([f'rgb{tuple((np.array(color)*255).astype(np.uint8))}' for color in sns.color_palette(None, len(cluster_list))])
     no_community = 'white'
     color_map = {}
@@ -205,6 +206,7 @@ def create_dashboard(server, master):
             ),
             html.Div(
                 [
+                    dbc.Label("Apply Base Clustering Algorithms"),
                     html.Button('Clique percolation', 
                                 id = 'clique_perc_button', 
                                 n_clicks = 0),
@@ -215,13 +217,24 @@ def create_dashboard(server, master):
                 ]
             ),
             html.Div(
-                html.Div(
                 [
-                    html.Button('Apply Consensus', 
-                                id = 'consensus_button', 
-                                n_clicks = 0),
+                    dbc.Label("Apply consensus Algorithms"),
                 ]
-            ),    
+            ),
+            html.Div(
+                [
+                    html.Button('Apply IPC', 
+                                id = 'IPC_button', 
+                                n_clicks = 0),
+                    
+                    html.Button('Apply IVC', 
+                                id = 'IVC_button', 
+                                n_clicks = 0),
+                    
+                    html.Button('Apply IPVC', 
+                                id = 'IPVC_button', 
+                                n_clicks = 0),
+                ]   
             ),
         ],
         body=True,
@@ -247,10 +260,12 @@ def create_dashboard(server, master):
         Input("clique_perc_button", "n_clicks"),
         Input("GA_button", "n_clicks"),
         Input("specie_button", "n_clicks"),
-        Input("consensus_button", "n_clicks"),
+        Input("IPC_button", "n_clicks"),
+        Input("IVC_button", "n_clicks"),
+        Input("IPVC_button", "n_clicks"),
         State("species-variable", "value")
     )
-    def update_graph(bttn_1, bttn_2, bttn_3, bttn_4, specie):
+    def update_graph(bttn_clq, bttn_ga, bttn_spc, bttn_ipc, bttn_ivc, bttn_ipvc, specie):
         changed_id = [p['prop_id'] for p in callback_context.triggered][0]
         if "clique_perc_button" in changed_id:
             print("pressed clique button")
@@ -270,11 +285,23 @@ def create_dashboard(server, master):
             print("pressed filter button")
             G = master.get_specie_interactions(specie)
             return networkGraph(G)
-        elif "consensus_button" in changed_id:
-            print("pressed consensus button")
+        elif "IPC_button" in changed_id:
+            print("pressed IPC button")
             master.add_consensus_for_specie(specie)
             clusters = master.get_specie_cluster_nodes(specie, 'IPC')
             G = master.get_specie_cluster_graph(specie, 'IPC')
+            return draw_cluster_graph(G, clusters)
+        elif "IVC_button" in changed_id:
+            print("pressed IVC button")
+            master.add_consensus_for_specie(specie)
+            clusters = master.get_specie_cluster_nodes(specie, 'IVC')
+            G = master.get_specie_cluster_graph(specie, 'IVC')
+            return draw_cluster_graph(G, clusters)
+        elif "IPVC_button" in changed_id:
+            print("pressed IPVC button")
+            master.add_consensus_for_specie(specie)
+            clusters = master.get_specie_cluster_nodes(specie, 'IPVC')
+            G = master.get_specie_cluster_graph(specie, 'IPVC')
             return draw_cluster_graph(G, clusters)
         else:
             print("done nothing yet")
