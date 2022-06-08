@@ -11,6 +11,7 @@ import json
 from matplotlib.font_manager import json_load
 from pyvis.network import Network
 
+
 class Data:
     def __init__(self) -> None:
 
@@ -91,6 +92,7 @@ class Data:
 
     def set_exps(self, sys, sys_type, author, pubmed):
         self.exp_data["_id"] = pubmed
+
 
 class Database:
 
@@ -530,3 +532,43 @@ def add_mentha_data(file_name, db, species):
         n += 1
         if n == 6:
             break
+
+
+if __name__ == "__main__":
+    # start = time.time()
+    # Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
+    # MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
+    # Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
+    # complex_addr = './allComplexes.json'
+    PPIDb = Database()
+    print("init database")
+    
+    # complexes = json_load(complex_addr)
+    # PPIDb.insert_clusters(complexes)
+    # print('Done')
+    print([x['Species Name'] for x in list(PPIDb.get_all_taxons(5))])
+    # add_biogrid_data(Biogrid_db_addr, PPIDb)
+    # add_mint_data(MINT_db_addr, PPIDb)
+    # add_mentha_data(Mentha_db_addr, PPIDb)
+
+    # PPIDb.remove_all_expdet()
+    # PPIDb.remove_all_interactions()
+    # PPIDb.remove_all_interactions(False)
+    # PPIDb.remove_everything()
+    # print("removed everything")
+
+    # PPIDb.get_stats()
+    # print("got stats")
+
+#     # for prot in PPIDb.get_all_prots(5):
+#     #     print(prot)
+
+#     # print(PPIDb.get_interactions_by_species("Caenorhabditis elegans"))
+
+    # query = PPIDb.get_interactions_by_species("Myxococcus xanthus")
+    # # query = PPIDb.get_interactions_by_protein(['SGK-1', 'DAF-16'])
+    # graph = PPIDb.get_graph(query)
+    # net = Network(notebook=True, bgcolor="#222222", font_color="white", height="100%", width="100%")
+    # net.from_nx(graph)
+    # net.show("PPIN.html")
+#     print(PPIDb.get_adj_matrix(query))

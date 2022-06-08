@@ -9,10 +9,6 @@ class Master:
     def __init__(self):
         self.PPIDb = Database()
         self.cluster_species = {}
-        # for x in list(self.PPIDb.get_all_taxons(30)):
-        #     specie = x['Species Name']
-        #     self.cluster_species[specie] = Cluster(specie, self.PPIDb)
-        #     print("Added: " + specie)
         
     def add_specie(self, specie):
         if specie not in self.cluster_species.keys():
@@ -27,6 +23,9 @@ class Master:
         self.add_specie(specie)
         self.cluster_species[specie].clusterGenAlgo(pop_size, num_gens, num_iters, chromosome_size, 
                                      cluster_size, elitism_rate, mutation_rate, num_changes, tau)
+    
+    def add_consensus_for_specie(self, specie):
+        self.cluster_species(specie).clusterConsensus()  
         
     def get_specie_interactions(self, specie):
         self.add_specie(specie)
@@ -55,7 +54,7 @@ class Master:
     
     def get_all_results_perc(self, k, I):
         result = [[""]]
-        for specie in ['Myxococcus xanthus', 'Homo sapiens', 'Treponema denticola']:
+        for specie in ['Myxococcus xanthus', 'Treponema denticola']:
             for k in range(3, 6):
                 result[0].append(k)
                 for I in np.arange(0.05, 0.6, 0.1):
@@ -97,15 +96,6 @@ class Master:
         table.add_rows(result)
         latex_bit = latextable.draw_latex(table)
         return latex_bit
-        
-    #pop_size: int, num_gens: int, num_iters: int,
-                # chromosome_size: int, cluster_size: int, elitism_rate: float, mutation_rate: float, 
-                # num_changes: int, tau: int
-    # def get_all_results(self):
-    #     for x in list(PPIDb.get_all_taxons()):
-    #         specie = x['Species Name']
-    #         self.add_perc_for_specie(specie)
-    #         self.add_gen_for_specie(specie)
         
         
     
