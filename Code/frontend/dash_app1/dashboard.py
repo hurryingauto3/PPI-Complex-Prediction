@@ -272,9 +272,10 @@ def create_dashboard(server, master):
             return networkGraph(G)
         elif "consensus_button" in changed_id:
             print("pressed consensus button")
-            # G = master.get_consensus(specie)
-            G = nx.Graph()
-            return networkGraph(G)
+            master.add_consensus_for_specie(specie)
+            clusters = master.get_specie_cluster_nodes(specie, 'IPC')
+            G = master.get_specie_cluster_graph(specie, 'IPC')
+            return draw_cluster_graph(G, clusters)
         else:
             print("done nothing yet")
             G = nx.Graph()

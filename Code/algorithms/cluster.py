@@ -1,6 +1,7 @@
 import networkx as nx
 from .database.DatabaseOG import Database, Data
 from .clique_perc import Clique_Percolation, find_intensity
+from .consensus import Consensus
 from .gen_algo import genAlgo
 
 class Cluster:
@@ -80,7 +81,7 @@ class Cluster:
             return self.complete_graph[source]
         
     def cluster_call_display(self, source = 'all'):
-        return self.get_complete_graph(source), self.get_cluster_nodes(self, source = 'all')
+        return self.get_complete_graph(source), self.get_cluster_nodes(source)
             
     def get_network(self):
         return self.Interaction_Network

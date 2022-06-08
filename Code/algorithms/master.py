@@ -23,6 +23,9 @@ class Master:
         self.add_specie(specie)
         self.cluster_species[specie].clusterGenAlgo(pop_size, num_gens, num_iters, chromosome_size, 
                                      cluster_size, elitism_rate, mutation_rate, num_changes, tau)
+    
+    def add_consensus_for_specie(self, specie):
+        self.cluster_species(specie).clusterConsensus()  
         
     def get_specie_interactions(self, specie):
         self.add_specie(specie)
