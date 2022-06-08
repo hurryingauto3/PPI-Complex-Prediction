@@ -19,16 +19,17 @@ class Cluster:
                                'IPVC': nx.Graph()}
    
     def clusterfromAlgo(self, data, source):
-        self.cluster_nodes[source] = data
-        self.clusters[source] = []
-        for cluster in data:
-            clusterobj = nx.Graph()
-            for i in range(len(cluster)):
-                for j in range(i, len(cluster)):
-                    if cluster[j] in self.Interaction_Network[cluster[i]].keys():
-                        clusterobj.add_edge(cluster[i], cluster[j])
-            self.clusters[source].append(clusterobj)
-            self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
+        if self.cluster_nodes[source] != []:
+            self.cluster_nodes[source] = data
+            self.clusters[source] = []
+            for cluster in data:
+                clusterobj = nx.Graph()
+                for i in range(len(cluster)):
+                    for j in range(i, len(cluster)):
+                        if cluster[j] in self.Interaction_Network[cluster[i]].keys():
+                            clusterobj.add_edge(cluster[i], cluster[j])
+                self.clusters[source].append(clusterobj)
+                self.complete_graph[source] = nx.compose(self.complete_graph[source], clusterobj)
 
     def clusterCliquePerc(self, k = 4, I = 0.05):
         self.clusterfromAlgo(Clique_Percolation(self.Interaction_Network, k, I), 'cliqueperc')
@@ -71,7 +72,7 @@ class Cluster:
     def get_cluster_nodes(self, source = 'all'):
         if source == 'all':
             return self.cluster_nodes['cliqeperc'] + self.cluster_nodes['genalgo']
-        elif source == 'cliqueperc' or source == 'genalgo':
+        else:
             return self.cluster_nodes[source] 
         
     def get_complete_graph(self, source = 'all'):
