@@ -18,5 +18,4 @@ def clustervis():
 
 @app.route('/statistics')
 def statistics():
-    stats = [1, 2, 3, 4, 5]
-    return render_template('statistics.html', stats=stats)
+    return render_template('statistics.html')

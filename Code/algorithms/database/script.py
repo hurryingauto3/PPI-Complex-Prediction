@@ -130,7 +130,6 @@ def get_sequence_length(protein):
     r = requests.get(requestURL, headers={"Accept": "application/json"})
 
     if not r.ok:
-        # r.raise_for_status()
         return 1
     responseBody = r.json()
     seq_len = 0
@@ -157,9 +156,9 @@ def add_mint_data_from_file(file_name, db):
     taxons = np.unique(taxons)
     taxon_list = pd.DataFrame({'_id':taxons})
     print('getting species names')
-    # taxon_list['Species Name'] = [get_species_name(x) for x in taxon_list['_id']]
-    # taxon_json = json.loads(taxon_list.to_json(orient='table',index=False))
-    # db.insert_taxon_list(taxon_json['data'])    
+    taxon_list['Species Name'] = [get_species_name(x) for x in taxon_list['_id']]
+    taxon_json = json.loads(taxon_list.to_json(orient='table',index=False))
+    db.insert_taxon_list(taxon_json['data'])    
     proteins = None
     not_done = [210, 632, 882]
     for taxon in taxon_list['_id']:
@@ -182,39 +181,16 @@ def add_mint_data_from_file(file_name, db):
                 db.insert_protein_list(protein_json['data'])
             except:
                 not_done.append(taxon)
-    # interactions = pd.DataFrame()
-    # interactions['_id'] = df['Gene A'] + '_' + df['Gene B']
-    # interactions['Gene A'] = df['Gene A']
-    # interactions['Gene B'] = df['Gene B']
-    # interactions['MINT Score'] = df['Score']
-    # interactions['Source'] = 'MINT'
-    # interactions['Experiment ID'] = df['PMID']
-    # interaction_json = json.loads(interactions.to_json(orient='table',index=False))
-    # db.insert_interaction_list(interaction_json['data'])
-    # print(interactions)
+    interactions = pd.DataFrame()
+    interactions['_id'] = df['Gene A'] + '_' + df['Gene B']
+    interactions['Gene A'] = df['Gene A']
+    interactions['Gene B'] = df['Gene B']
+    interactions['MINT Score'] = df['Score']
+    interactions['Source'] = 'MINT'
+    interactions['Experiment ID'] = df['PMID']
+    interaction_json = json.loads(interactions.to_json(orient='table',index=False))
+    db.insert_interaction_list(interaction_json['data'])
+    print(interactions)
     print(not_done)
     print('done')
-    
-    
-    # 
-    
-        
-   
-if __name__ == "__main__":
-    PPIDb = Database()
-    Biogrid_db_addr = 'D:/Kaavish/tempData/Biogrid-all-int.txt'
-    MINT_db_addr = "D:/Kaavish/tempData/MINT-all-int.txt"
-    Mentha_db_addr = "D:/Kaavish/tempData/mentha-human-int.txt"
-    # gene_list = ['MTMR4', 'CRYBG3', 'ANKRD40', 'EHD3', 'RAB8A', 'Q9NYA4', 'Q68DQ2', 'Q6AI12', 'Q9NZN3', 'P61006']
-    # gene_list = ['Q9NYA4', 'Q68DQ2', 'Q6AI12', 'Q9NZN3', 'P61006']
-    # for gene in gene_list:
-    #     print(get_affinity(gene))
-    add_mint_data_from_file(MINT_db_addr, PPIDb)
-    # PPIDb.remove_everything()
-    # df = pd.read_csv(MINT_db_addr,sep=';')
-    
-    
-    # taxon_listB = df['Taxon B'].unique()
-    
-    # protein_test = 'P45985'
     
