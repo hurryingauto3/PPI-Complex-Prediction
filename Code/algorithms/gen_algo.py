@@ -224,5 +224,3 @@ def cumsum(pop: dict) -> dict:
         cum_pop[chroms[i]] = (fitnesses[i], cum)
     # print(cum_pop)
     return cum_pop
-
-    
