@@ -13,6 +13,7 @@ import numpy as np
 
 def draw_cluster_graph(G, cluster_list):
     print("DRAWING CLUSTER GRAPH\n\n")
+    print(G)
     palette = itertools.cycle([f'rgb{tuple((np.array(color)*255).astype(np.uint8))}' for color in sns.color_palette(None, len(cluster_list))])
     no_community = 'white'
     color_map = {}
