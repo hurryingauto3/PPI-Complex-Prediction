@@ -154,7 +154,7 @@ class genAlgo(object):
         adjacents = self.nodes2indices(list(self.ppin_graph.neighbors(selected_node)))
         cluster = self.nodes2indices(cluster)
         adjacents = [adjacents[i] for i in range(len(adjacents)) if adjacents[i] not in cluster]
-        chromosome[i].extend(adjacents)
+        chromosome[i].extend(adjacents)     
         chromosome = self.chromlist2tup(chromosome)
         # print(chromosome)
         return chromosome
