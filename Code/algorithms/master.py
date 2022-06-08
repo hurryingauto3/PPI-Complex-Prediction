@@ -25,7 +25,7 @@ class Master:
                                      cluster_size, elitism_rate, mutation_rate, num_changes, tau)
     
     def add_consensus_for_specie(self, specie):
-        self.cluster_species(specie).clusterConsensus()  
+        self.cluster_species[specie].clusterConsensus()  
         
     def get_specie_interactions(self, specie):
         self.add_specie(specie)
