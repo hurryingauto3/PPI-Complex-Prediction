@@ -1,11 +1,7 @@
-import imp
-from algorithms.cluster import Cluster
 
-
-from cluster import Cluster
 
 class Consensus:
-    def __init__(self, clusters: Cluster) -> None:
+    def __init__(self, clusters) -> None:
         self.clusters = clusters
 
     def IVC(self):
@@ -15,5 +11,14 @@ class Consensus:
         pass
 
     def IPC(self):
-        pass
-    
+        clusters = []
+        for i in self.clusters[0]:
+            cluster = []
+            for j in self.clusters[1]:
+                for k in set(i.nodes).intersection(set(j.nodes)):
+                    cluster.append(k)
+            clusters.append(cluster)
+        return clusters
+                    
+
+                

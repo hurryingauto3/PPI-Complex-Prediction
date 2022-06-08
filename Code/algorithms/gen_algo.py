@@ -4,6 +4,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import time 
 
 class genAlgo(object):
     def __init__(self, ppin_graph: nx.Graph, pop_size: int, num_gens: int, num_iters: int,
@@ -192,6 +193,7 @@ class genAlgo(object):
 
 
     def run(self):
+        start = time.time()
         best_chromosomes = []
         for iter in range(self.num_iters):
             # initialize_pop
@@ -208,6 +210,7 @@ class genAlgo(object):
         # final_clustering = self.chrom2list(final_clustering[0])
         final_clustering = final_clustering[0]
         # print(final_clustering)
+        print("Time taken to execute clustering via Genetic Algorithm: ", time.time() - start)
         return self.format_output(final_clustering)
 
 

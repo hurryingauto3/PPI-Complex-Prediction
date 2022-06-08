@@ -66,7 +66,7 @@ def Clique_Percolation(G, k, I):
                 x for x in clique if x not in common_elements_in_cliques]
         communities.append(common_elements_in_cliques)
 
-    print('Time taken for function to run:', time.time() - start)
+    print('Time taken to execute clustering via Clique Percolation:', time.time() - start)
     
     return communities
 

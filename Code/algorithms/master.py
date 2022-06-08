@@ -55,11 +55,7 @@ class Master:
     
     def get_all_results_perc(self, k, I):
         result = [[""]]
-<<<<<<< HEAD
         for specie in ['Myxococcus xanthus', 'Treponema denticola']:
-=======
-        for specie in ['Myxococcus xanthus', 'Homo sapiens', 'Treponema denticola']:
->>>>>>> c112d6a11506f42af2744ff69c39afb4558ca1e1
             for k in range(3, 6):
                 result[0].append(k)
                 for I in np.arange(0.05, 0.6, 0.1):
