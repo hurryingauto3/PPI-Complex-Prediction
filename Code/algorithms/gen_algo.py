@@ -145,7 +145,7 @@ class genAlgo(object):
             chromosome[rand].append(chromosome[i][k])
             chromosome[i].remove(chromosome[i][k])
         chromosome = self.chromlist2tup(chromosome)
-        print(chromosome)
+        # print(chromosome)
         return chromosome
 
     def mutate_util2(self, chromosome: tuple, i: int, k: int):
@@ -227,12 +227,12 @@ def cumsum(pop: dict) -> dict:
     return cum_pop
 
 
-nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
-edges = [('a','b'), ('a','c'), ('a', 'd'), ('b','c'), ('b','d') , ('c','e'),  ('e','f'), ('e','g'), ('f', 'g'), ('a', 'g')]
+# nodes = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+# edges = [('a','b'), ('a','c'), ('a', 'd'), ('b','c'), ('b','d') , ('c','e'),  ('e','f'), ('e','g'), ('f', 'g'), ('a', 'g')]
 
-sample = nx.Graph()
-sample.add_nodes_from(nodes)
-sample.add_edges_from(edges)
+# sample = nx.Graph()
+# sample.add_nodes_from(nodes)
+# sample.add_edges_from(edges)
 
-ga_instance = genAlgo(sample, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2)
-ga_instance.run()
+# ga_instance = genAlgo(sample, 20, 10, 10, 5, 5, 0.1, 0.4, 3, 0.2)
+# ga_instance.run()
