@@ -16,9 +16,6 @@ class Cluster:
                                }
    
     def clusterfromAlgo(self, data, source):
-        # if source == 'cliqueperc' and self.cluster_nodes['cliqueperc'] == []:
-        #     pass
-        # else:
         self.cluster_nodes[source] = data
         self.clusters[source] = []
         for cluster in data:

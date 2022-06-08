@@ -9,10 +9,6 @@ class Master:
     def __init__(self):
         self.PPIDb = Database()
         self.cluster_species = {}
-        # for x in list(self.PPIDb.get_all_taxons(30)):
-        #     specie = x['Species Name']
-        #     self.cluster_species[specie] = Cluster(specie, self.PPIDb)
-        #     print("Added: " + specie)
         
     def add_specie(self, specie):
         if specie not in self.cluster_species.keys():
@@ -77,15 +73,6 @@ class Master:
         table.add_rows(result)
         latex_bit = latextable.draw_latex(table)
         return latex_bit
-        
-    #pop_size: int, num_gens: int, num_iters: int,
-                # chromosome_size: int, cluster_size: int, elitism_rate: float, mutation_rate: float, 
-                # num_changes: int, tau: int
-    # def get_all_results(self):
-    #     for x in list(PPIDb.get_all_taxons()):
-    #         specie = x['Species Name']
-    #         self.add_perc_for_specie(specie)
-    #         self.add_gen_for_specie(specie)
         
         
     

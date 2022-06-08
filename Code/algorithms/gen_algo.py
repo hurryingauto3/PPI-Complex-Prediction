@@ -203,11 +203,8 @@ class genAlgo(object):
                 gen += 1
             best_c = max(self.population, key= lambda key: self.population[key])
             best_chromosomes.append((best_c, self.eval_fitness(best_c)))
-        # choose single best clustering from best chromosomes
         final_clustering = max(best_chromosomes, key = lambda key: best_chromosomes[1])
-        # final_clustering = self.chrom2list(final_clustering[0])
         final_clustering = final_clustering[0]
-        # print(final_clustering)
         return self.format_output(final_clustering)
 
 
