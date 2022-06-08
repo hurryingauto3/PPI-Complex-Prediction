@@ -9,11 +9,13 @@ class Cluster:
         self.species = species
         self.query = self.PPIDb.get_interactions_by_species(self.species)
         self.Interaction_Network = self.PPIDb.get_graph(self.query)
-        self.clusters = {'cliqueperc' : [], 'genalgo' : []}
-        self.cluster_nodes = {'cliqueperc' : [], 'genalgo' : []}
+        self.clusters = {'cliqueperc' : [], 'genalgo' : [], 'IPC': [], 'IVC':[], 'IPVC  ': []}
+        self.cluster_nodes = {'cliqueperc' : [], 'genalgo' : [], 'IPC': [], 'IVC':[], 'IPVC': []}
         self.complete_graph = {'cliqueperc' : nx.Graph(),
-                               'genalgo' : nx.Graph()
-                               }
+                               'genalgo' : nx.Graph(),
+                               'IPC': nx.Graph(), 
+                               'IVC': nx.Graph(), 
+                               'IPVC': nx.Graph()}
    
     def clusterfromAlgo(self, data, source):
         self.cluster_nodes[source] = data
@@ -35,27 +37,35 @@ class Cluster:
         self.clusterfromAlgo(genAlgo(self.Interaction_Network, pop_size, num_gens, num_iters, chromosome_size, 
                                      cluster_size, elitism_rate, mutation_rate, num_changes, tau).run(), 'genalgo')
 
-    def get_consensus(self):
-        #call consensus algo here and return graph object
-        pass
     
+    def clusterConsensus(self, source = 'IPC'):
+        if source == 'IPC':
+            self.clusterfromAlgo(Consensus([self.clusters['cliqueperc'], self.clusters['genalgo']]).IPC(), 'IPC')
+        elif source == 'IPVC':
+            self.clusterfromAlgo(Consensus([self.clusters['cliqueperc'], self.clusters['genalgo']]).IPVC(), 'IPVC')
+        elif source == 'IVC':
+            self.clusterfromAlgo(Consensus([self.clusters['cliqueperc'], self.clusters['genalgo']]).IVC(), 'IVC')
+
     def get_clusterCount(self, source = 'all'):
         if source == 'all':
             return len(self.getClusters())
         elif source == 'cliqueperc' or source == 'genalgo':
-            return len(self.get_clusters(source))
+            return len(self.getClusters(source))
 
     def getClusters(self, source = 'all'):
         if source == 'all':
             return self.clusters['cliqeperc'] + self.clusters['genalgo']
         elif source == 'cliqueperc' or source == 'genalgo':
             return self.clusters[source]
-    
+
+    def getClusterDict(self):
+        return self.clusters
+
     def get_cluster_size(self, source = 'all'):
         if source == 'all':
-            return [len(i) for i in self.get_clusters()]
+            return [len(i) for i in self.getClusters()]
         elif source == 'cliqueperc' or source == 'genalgo':
-            return [len(i) for i in self.get_clusters(source)]
+            return [len(i) for i in self.getClusters(source)]
     
     def get_cluster_nodes(self, source = 'all'):
         if source == 'all':
@@ -74,4 +84,11 @@ class Cluster:
             
     def get_network(self):
         return self.Interaction_Network
-    
+
+
+# db = Database()
+# cluster = Cluster('Myxococcus xanthus', db)
+# cluster.clusterCliquePerc()
+# cluster.clusterGenAlgo()
+# cluster.clusterConsensus('IPC')
+# print(cluster.getClusterDict())
