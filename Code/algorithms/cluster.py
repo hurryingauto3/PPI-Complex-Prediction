@@ -19,7 +19,7 @@ class Cluster:
                                'IPVC': nx.Graph()}
    
     def clusterfromAlgo(self, data, source):
-        if self.cluster_nodes[source] != []:
+        if self.cluster_nodes[source] == []:
             self.cluster_nodes[source] = data
             self.clusters[source] = []
             for cluster in data:
