@@ -14,8 +14,7 @@ def init_app(master):
         nav.Bar('top', [
             nav.Item('Home', 'index'),
             nav.Item('Protien Networks', 'protnetwork'),
-            nav.Item('Clustering', 'clustervis'),
-            nav.Item('Statistics', 'statistics')
+            nav.Item('Clustering', 'clustervis')
         ])
         nav.init_app(app)
         # Import parts of our core Flask app

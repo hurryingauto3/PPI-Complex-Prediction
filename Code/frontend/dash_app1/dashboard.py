@@ -227,13 +227,13 @@ def create_dashboard(server, master):
                                 id = 'IPC_button', 
                                 n_clicks = 0),
                     
-                    html.Button('Apply IVC', 
-                                id = 'IVC_button', 
-                                n_clicks = 0),
+                    # html.Button('Apply IVC', 
+                    #             id = 'IVC_button', 
+                    #             n_clicks = 0),
                     
-                    html.Button('Apply IPVC', 
-                                id = 'IPVC_button', 
-                                n_clicks = 0),
+                    # html.Button('Apply IPVC', 
+                    #             id = 'IPVC_button', 
+                    #             n_clicks = 0),
                 ]   
             ),
         ],
@@ -261,11 +261,11 @@ def create_dashboard(server, master):
         Input("GA_button", "n_clicks"),
         Input("specie_button", "n_clicks"),
         Input("IPC_button", "n_clicks"),
-        Input("IVC_button", "n_clicks"),
-        Input("IPVC_button", "n_clicks"),
+        # Input("IVC_button", "n_clicks"),
+        # Input("IPVC_button", "n_clicks"),
         State("species-variable", "value")
     )
-    def update_graph(bttn_clq, bttn_ga, bttn_spc, bttn_ipc, bttn_ivc, bttn_ipvc, specie):
+    def update_graph(bttn_clq, bttn_ga, bttn_spc, bttn_ipc, specie):
         changed_id = [p['prop_id'] for p in callback_context.triggered][0]
         if "clique_perc_button" in changed_id:
             print("pressed clique button")
@@ -291,18 +291,18 @@ def create_dashboard(server, master):
             clusters = master.get_specie_cluster_nodes(specie, 'IPC')
             G = master.get_specie_cluster_graph(specie, 'IPC')
             return draw_cluster_graph(G, clusters)
-        elif "IVC_button" in changed_id:
-            print("pressed IVC button")
-            master.add_consensus_for_specie(specie)
-            clusters = master.get_specie_cluster_nodes(specie, 'IVC')
-            G = master.get_specie_cluster_graph(specie, 'IVC')
-            return draw_cluster_graph(G, clusters)
-        elif "IPVC_button" in changed_id:
-            print("pressed IPVC button")
-            master.add_consensus_for_specie(specie)
-            clusters = master.get_specie_cluster_nodes(specie, 'IPVC')
-            G = master.get_specie_cluster_graph(specie, 'IPVC')
-            return draw_cluster_graph(G, clusters)
+        # elif "IVC_button" in changed_id:
+        #     print("pressed IVC button")
+        #     master.add_consensus_for_specie(specie)
+        #     clusters = master.get_specie_cluster_nodes(specie, 'IVC')
+        #     G = master.get_specie_cluster_graph(specie, 'IVC')
+        #     return draw_cluster_graph(G, clusters)
+        # elif "IPVC_button" in changed_id:
+        #     print("pressed IPVC button")
+        #     master.add_consensus_for_specie(specie)
+        #     clusters = master.get_specie_cluster_nodes(specie, 'IPVC')
+        #     G = master.get_specie_cluster_graph(specie, 'IPVC')
+        #     return draw_cluster_graph(G, clusters)
         else:
             print("done nothing yet")
             G = nx.Graph()

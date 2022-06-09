@@ -14,7 +14,7 @@ class Master:
         if specie not in self.cluster_species.keys():
             self.cluster_species[specie] = Cluster(specie, self.PPIDb)
         
-    def add_perc_for_specie(self, specie, k = 4, I = 0.05):
+    def add_perc_for_specie(self, specie, I = 0.15, k = 4):
         self.add_specie(specie)
         self.cluster_species[specie].clusterCliquePerc(k, I)
             
