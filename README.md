@@ -38,7 +38,7 @@ Other possible tasks:
 
 
 
-## PPI Networks - Usaid/Ali 
+## PPI Networks
 ### Interactome
 An interactome is a biological network the represents the whole set of molecular interactions in a specicied biological scope such as cell, an organism, etc. It specicifically referes to interactions amongst Protiens, between proteins and other small molecules, but it can also be used to refer to other interactions between other types of molecules, however for our usecase the term will strictly refer to interactions between proteins.
 ### PPI Networks
@@ -58,17 +58,14 @@ Protien-Protien Interaction Networks (PPIN) are mathematical representations of 
 - #### Betweenness Centrality
 - #### Clustering Analysis
 
-## Dataset - Maham 
-Database of databases of PPIN
-http://www.vls3d.com/index.php/links/bioinformatics/protein-protein-interaction/ppi-databases-network
-http://www.string-db.org
-https://bet.uniprot.org
-https://sparql.uniprot.org 
-https://thebiogrid.org
-http://cicblade.dep.usal.es:8080/APID/init.action
-## PPIN Analysis Methods - Haris 
-https://pymol.org/2/ - For visualizing proteins
+### Dataset
+- Database of databases of PPIN
+- http://www.vls3d.com/index.php/links/bioinformatics/protein-protein-interaction/ppi-databases-network
+- http://www.string-db.org
+- https://bet.uniprot.org
+- https://sparql.uniprot.org 
+- https://thebiogrid.org
+- http://cicblade.dep.usal.es:8080/APID/init.action
 
-## References
 
 
